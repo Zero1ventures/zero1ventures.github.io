@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zero1 Ventures — AI-Powered Software Development</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white: #ffffff;
+      --bg: #06080f;
+      --bg2: #0b0f1a;
+      --bg3: #0f1521;
+      --blue: #2563ff;
+      --blue-bright: #4d8bff;
+      --blue-glow: rgba(37,99,255,0.18);
+      --blue-dim: rgba(37,99,255,0.08);
+      --cyan: #00d4ff;
+      --text: #e8ecf4;
+      --text-muted: #7a8499;
+      --text-dim: #3d4459;
+      --border: rgba(255,255,255,0.07);
+      --border-blue: rgba(37,99,255,0.3);
+      --mono: 'DM Mono', monospace;
+      --sans: 'Sora', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── CANVAS ── */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      background: rgba(6,8,15,0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(6,8,15,0.96);
+      border-bottom-color: var(--border-blue);
+    }
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .logo-mark {
+      width: 38px; height: 38px;
+      background: var(--blue);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 500;
+      color: white;
+      letter-spacing: -0.05em;
+      box-shadow: 0 0 20px rgba(37,99,255,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .logo-mark::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    }
+    .logo-text .name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--white);
+    }
+    .logo-text .name span { color: var(--blue-bright); }
+    .logo-text .tagline {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: var(--mono);
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      color: var(--white) !important;
+      background: var(--blue);
+      padding: 9px 20px;
+      border-radius: 8px;
+      transition: box-shadow 0.2s, transform 0.15s !important;
+      box-shadow: 0 0 0 rgba(37,99,255,0);
+    }
+    .nav-cta:hover {
+      box-shadow: 0 0 24px rgba(37,99,255,0.5) !important;
+      transform: translateY(-1px) !important;
+      color: var(--white) !important;
+    }
+
+    /* ── HERO ── */
+    .hero-section {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+    }
+    .hero {
+      max-width: 1120px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      padding: 120px 0 80px;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--blue-bright);
+      background: var(--blue-dim);
+      border: 1px solid var(--border-blue);
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 1.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .hero-eyebrow .dot {
+      width: 6px; height: 6px;
+      background: var(--blue-bright);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 6px var(--blue-bright);
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.4; transform:scale(0.7); }
+    }
+    h1 {
+      font-size: clamp(38px, 4.5vw, 58px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.06;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+    .h1-static { display: block; }
+    .h1-cycling {
+      display: block;
+      color: var(--blue-bright);
+      position: relative;
+      min-height: 1.1em;
+    }
+    #cycling-text { }
+    .type-cursor {
+      display: inline-block;
+      width: 3px;
+      height: 0.85em;
+      background: var(--blue-bright);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: blink 0.8s step-end infinite;
+      border-radius: 1px;
+      box-shadow: 0 0 8px var(--blue-bright);
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .hero-sub {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+      max-width: 480px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .btn-primary {
+      background: var(--blue);
+      color: var(--white);
+      padding: 14px 30px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: box-shadow 0.2s, transform 0.15s;
+      letter-spacing: -0.01em;
+      box-shadow: 0 4px 24px rgba(37,99,255,0.3);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 36px rgba(37,99,255,0.55);
+      transform: translateY(-2px);
+    }
+    .btn-ghost {
+      color: var(--text-muted);
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 400;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+    }
+    .trust-item::before {
+      content: '✓';
+      color: var(--blue-bright);
+      font-size: 11px;
+    }
+
+    /* ── HERO VISUAL ── */
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+    }
+    .terminal-wrap {
+      position: relative;
+    }
+    .terminal-glow {
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(ellipse at center, rgba(37,99,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .terminal {
+      background: #0d1117;
+      border: 1px solid rgba(37,99,255,0.25);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(37,99,255,0.1);
+    }
+    .terminal-bar {
+      background: #161b22;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .t-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .t-dot-r { background: #ff5f57; }
+    .t-dot-y { background: #ffbd2e; }
+    .t-dot-g { background: #28ca41; }
+    .t-filename {
+      margin-left: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #6e7681;
+    }
+    .t-tab {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: #6e7681;
+      background: rgba(37,99,255,0.12);
+      border: 1px solid rgba(37,99,255,0.2);
+      padding: 2px 10px;
+      border-radius: 4px;
+    }
+    .terminal-body {
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+    .c-comment { color: #484f58; }
+    .c-keyword { color: #ff79c6; }
+    .c-func { color: #79b8ff; }
+    .c-string { color: #9ecbff; }
+    .c-var { color: #ffab70; }
+    .c-text { color: #c9d1d9; }
+    .c-num { color: #79c0ff; }
+    .c-op { color: #6e7681; }
+    .line-num {
+      display: inline-block;
+      width: 24px;
+      color: #2d333b;
+      user-select: none;
+      margin-right: 12px;
+      text-align: right;
+    }
+
+    .terminal-output {
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding: 14px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .out-chip {
+      background: rgba(37,99,255,0.08);
+      border: 1px solid rgba(37,99,255,0.18);
+      border-radius: 8px;
+      padding: 10px 14px;
+      text-align: center;
+    }
+    .out-val {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--blue-bright);
+      line-height: 1.2;
+    }
+    .out-lbl {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 3px;
+      font-family: var(--mono);
+    }
+
+    /* floating badges */
+    .badge-float {
+      position: absolute;
+      background: var(--bg2);
+      border: 1px solid var(--border-blue);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      animation: float 4s ease-in-out infinite;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .badge-float .icon { font-size: 14px; }
+    .badge-1 { top: -22px; right: -20px; animation-delay: 0s; }
+    .badge-2 { bottom: 60px; left: -28px; animation-delay: 1.5s; }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ── SECTION BASE ── */
+    section { position: relative; z-index: 1; }
+    .section-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 100px 2rem;
+    }
+    .section-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--blue-bright);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-eyebrow::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--blue-bright);
+    }
+    h2 {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 500px;
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    /* ── SERVICES ── */
+    .services-bg {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .services-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .services-header .section-eyebrow { justify-content: center; }
+    .services-header .section-eyebrow::before { display: none; }
+    .services-header .section-sub { margin: 0 auto; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .service-card {
+      background: var(--bg2);
+      padding: 36px 28px;
+      position: relative;
+      transition: background 0.3s;
+      cursor: default;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 20%, rgba(37,99,255,0.07) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .service-card:hover { background: var(--bg3); }
+    .service-card:hover::after { opacity: 1; }
+    .service-icon-wrap {
+      width: 44px; height: 44px;
+      background: var(--blue-dim);
+      border: 1px solid var(--border-blue);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 20px;
+      transition: box-shadow 0.3s;
+    }
+    .service-card:hover .service-icon-wrap {
+      box-shadow: 0 0 20px rgba(37,99,255,0.3);
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+    .service-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .service-num {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── ABOUT / STATS ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-text .section-sub { max-width: 100%; margin-top: 20px; }
+    .about-text p {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.8;
+      font-weight: 300;
+      margin-top: 16px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .stat-card:hover {
+      border-color: var(--border-blue);
+      transform: translateY(-3px);
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue) 0%, var(--cyan) 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-val {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-val span { color: var(--blue-bright); }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── PROCESS STRIP ── */
+    .process-section {
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 50%, var(--bg) 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .process-header { text-align: center; margin-bottom: 60px; }
+    .process-header .section-eyebrow { justify-content: center; }
+    .process-header .section-eyebrow::before { display: none; }
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(12.5% + 20px);
+      right: calc(12.5% + 20px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-blue), var(--blue), var(--border-blue), transparent);
+    }
+    .process-step {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+    .step-num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--border-blue);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--blue-bright);
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .process-step:hover .step-num {
+      background: var(--blue-dim);
+      box-shadow: 0 0 20px rgba(37,99,255,0.3);
+    }
+    .step-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .step-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+    }
+    .cta-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 100px 2rem;
+      text-align: center;
+    }
+    .cta-inner h2 { font-size: clamp(28px, 4vw, 44px); }
+    .cta-inner .section-sub { margin: 16px auto 40px; font-size: 16px; }
+    .cta-form {
+      display: flex;
+      gap: 10px;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    .cta-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 15px;
+      color: var(--white);
+      font-family: var(--sans);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .cta-input::placeholder { color: var(--text-dim); }
+    .cta-input:focus {
+      border-color: var(--border-blue);
+      box-shadow: 0 0 0 3px rgba(37,99,255,0.12);
+    }
+    .btn-send {
+      background: var(--blue);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      font-family: var(--sans);
+      white-space: nowrap;
+      transition: box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 4px 20px rgba(37,99,255,0.3);
+    }
+    .btn-send:hover {
+      box-shadow: 0 6px 32px rgba(37,99,255,0.5);
+      transform: translateY(-1px);
+    }
+    .cta-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 14px;
+      font-family: var(--mono);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 2rem;
+    }
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    footer p {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-family: var(--mono);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-muted); }
+
+    /* ── SCROLL REVEALS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 3rem; padding: 110px 0 60px; }
+      .hero-visual { display: none; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .process-steps { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .process-steps::before { display: none; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 540px) {
+      .services-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .cta-form { flex-direction: column; }
+      .process-steps { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">Z¹</div>
+      <div class="logo-text">
+        <span class="name">ZERO<span>1</span> VENTURES</span>
+        <span class="tagline">AI · Software · Innovation</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero-section">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <div class="dot"></div>
+        AI-Powered Development Studio
+      </div>
+      <h1>
+        <span class="h1-static">We build software</span>
+        <span class="h1-cycling">
+          <span id="cycling-text">that thinks.</span><span class="type-cursor"></span>
+        </span>
+      </h1>
+      <p class="hero-sub">Zero1 Ventures designs and builds intelligent applications using the latest AI — shipping faster, smarter, and ready to scale from day one.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Start a project</a>
+        <a href="#services" class="btn-ghost">Our services →</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item">AI-native stack</div>
+        <div class="trust-item">Full-stack delivery</div>
+        <div class="trust-item">Zero to launch</div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="terminal-wrap">
+        <div class="terminal-glow"></div>
+        <div class="badge-float badge-1">
+          <span class="icon">⚡</span> Build complete — 4.2s
+        </div>
+        <div class="badge-float badge-2">
+          <span class="icon">🤖</span> AI agent running
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="t-dot t-dot-r"></div>
+            <div class="t-dot t-dot-y"></div>
+            <div class="t-dot t-dot-g"></div>
+            <span class="t-filename">zero1_pipeline.py</span>
+            <span class="t-tab">AI Agent</span>
+          </div>
+          <div class="terminal-body">
+            <div><span class="line-num">1</span><span class="c-comment"># Zero1 Ventures — AI pipeline</span></div>
+            <div><span class="line-num">2</span><span class="c-keyword">from</span> <span class="c-text">zero1</span> <span class="c-keyword">import</span> <span class="c-func">Agent</span><span class="c-op">, </span><span class="c-func">Pipeline</span></div>
+            <div><span class="line-num">3</span></div>
+            <div><span class="line-num">4</span><span class="c-var">agent</span> <span class="c-op">= </span><span class="c-func">Agent</span><span class="c-op">(</span></div>
+            <div><span class="line-num">5</span>&nbsp;&nbsp;<span class="c-var">model</span><span class="c-op">=</span><span class="c-string">"gpt-4o"</span><span class="c-op">,</span></div>
+            <div><span class="line-num">6</span>&nbsp;&nbsp;<span class="c-var">tools</span><span class="c-op">=[</span><span class="c-string">"search"</span><span class="c-op">, </span><span class="c-string">"code"</span><span class="c-op">, </span><span class="c-string">"deploy"</span><span class="c-op">],</span></div>
+            <div><span class="line-num">7</span>&nbsp;&nbsp;<span class="c-var">speed</span><span class="c-op">=</span><span class="c-num">10</span><span class="c-op">,</span>&nbsp;&nbsp;<span class="c-comment"># 10× faster</span></div>
+            <div><span class="line-num">8</span><span class="c-op">)</span></div>
+            <div><span class="line-num">9</span></div>
+            <div><span class="line-num">10</span><span class="c-var">result</span> <span class="c-op">= </span><span class="c-var">agent</span><span class="c-op">.</span><span class="c-func">ship</span><span class="c-op">(</span><span class="c-var">your_idea</span><span class="c-op">)</span></div>
+          </div>
+          <div class="terminal-output">
+            <div class="out-chip">
+              <div class="out-val">10×</div>
+              <div class="out-lbl">faster</div>
+            </div>
+            <div class="out-chip">
+              <div class="out-val">AI</div>
+              <div class="out-lbl">native</div>
+            </div>
+            <div class="out-chip">
+              <div class="out-val" id="counter-val">0</div>
+              <div class="out-lbl">lines/sec</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services-bg" id="services">
+  <div class="section-inner">
+    <div class="services-header reveal">
+      <div class="section-eyebrow">What we build</div>
+      <h2>Services built for<br />the AI era.</h2>
+      <p class="section-sub">From concept to production, we bring AI-first engineering to every layer of your product.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <span class="service-num">01</span>
+        <div class="service-icon-wrap">🤖</div>
+        <h3>AI Integration</h3>
+        <p>Embed LLMs, computer vision, and generative AI into your systems — seamlessly and at scale.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <span class="service-num">02</span>
+        <div class="service-icon-wrap">⚡</div>
+        <h3>Rapid App Development</h3>
+        <p>Production-ready applications in weeks. Modern frameworks, CI/CD, and AI-assisted dev cycles.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <span class="service-num">03</span>
+        <div class="service-icon-wrap">🏗️</div>
+        <h3>System Architecture</h3>
+        <p>Scalable, cloud-native systems designed to grow — from MVP to enterprise without rearchitecting.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-4">
+        <span class="service-num">04</span>
+        <div class="service-icon-wrap">🔁</div>
+        <h3>Automation & Agents</h3>
+        <p>Intelligent automation and custom AI agents that eliminate repetitive work across your operations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="process">
+  <div class="section-inner">
+    <div class="process-header reveal">
+      <div class="section-eyebrow">How we work</div>
+      <h2>From idea to live product.</h2>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-num">01</div>
+        <div class="step-title">Discovery</div>
+        <p class="step-desc">We map your goals, constraints, and the AI opportunities inside your problem space.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="step-num">02</div>
+        <div class="step-title">Architecture</div>
+        <p class="step-desc">We design the right stack — AI models, backend, infra — built to last, not just launch.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="step-num">03</div>
+        <div class="step-title">Build</div>
+        <p class="step-desc">Fast iterations using AI-assisted development. Working software from week one.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-4">
+        <div class="step-num">04</div>
+        <div class="step-title">Launch & Scale</div>
+        <p class="step-desc">Deploy with confidence. We stay close post-launch to optimise and evolve with you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="stats-grid reveal">
+        <div class="stat-card">
+          <div class="stat-val">AI<span>-first</span></div>
+          <div class="stat-label">Built on the latest models</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">0<span>→1</span></div>
+          <div class="stat-label">From idea to launch</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">Full<span>-stack</span></div>
+          <div class="stat-label">End-to-end delivery</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">∞</div>
+          <div class="stat-label">Scale on demand</div>
+        </div>
+      </div>
+      <div class="about-text reveal reveal-delay-2">
+        <div class="section-eyebrow">Our mission</div>
+        <h2>We turn bold ideas into real software.</h2>
+        <p>Zero1 Ventures exists at the intersection of startup agility and enterprise-grade engineering. We're a team of builders obsessed with what's possible when AI is applied intelligently.</p>
+        <p>Our name says it all — we take you from zero to one. Whether launching a new product, automating operations, or building the AI-native app your industry doesn't know it needs yet, we're your technical partner.</p>
+        <p>We work closely with founders, operators, and innovation teams to ship software that's not just functional — but genuinely transformative.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="cta-inner">
+    <div class="section-eyebrow" style="justify-content:center; margin-bottom:16px;">
+      <span style="width:24px;height:1px;background:var(--blue-bright);display:inline-block"></span>
+      Let's build
+    </div>
+    <h2 class="reveal">Ready to start<br />your next project?</h2>
+    <p class="section-sub reveal reveal-delay-1">Tell us what you're building. We'll help you find the fastest path to launch.</p>
+    <div class="cta-form reveal reveal-delay-2">
+      <input type="email" class="cta-input" id="cta-email" placeholder="your@email.com" />
+      <button class="btn-send" onclick="handleSubmit()">Get in touch</button>
+    </div>
+    <p class="cta-note reveal reveal-delay-3">No commitment. We respond within 24 hours.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <p>© 2025 Zero1 Ventures. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="./imin/privacy.html">Privacy Policy</a>
+      <a href="./imin/terms.html">Terms of Service</a>
+      <a href="mailto:contact@zero1co.com">contact@zero1co.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── PARTICLE NETWORK ──
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const COUNT = 80, CONNECT_DIST = 140, MOUSE = { x: -999, y: -999 };
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function Particle() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.r = Math.random() * 1.5 + 0.5;
+  }
+
+  function initParticles() {
+    particles = Array.from({ length: COUNT }, () => new Particle());
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, W, H);
+    // Move
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+    });
+    // Connect
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECT_DIST) {
+          const alpha = (1 - dist / CONNECT_DIST) * 0.35;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(37,99,255,${alpha})`;
+          ctx.lineWidth = 0.6;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+      // Mouse connection
+      const mdx = particles[i].x - MOUSE.x;
+      const mdy = particles[i].y - MOUSE.y;
+      const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (mDist < 180) {
+        const alpha = (1 - mDist / 180) * 0.6;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(77,139,255,${alpha})`;
+        ctx.lineWidth = 0.8;
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(MOUSE.x, MOUSE.y);
+        ctx.stroke();
+      }
+    }
+    // Dots
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(77,139,255,0.7)';
+      ctx.fill();
+    });
+    requestAnimationFrame(drawParticles);
+  }
+
+  window.addEventListener('mousemove', e => { MOUSE.x = e.clientX; MOUSE.y = e.clientY; });
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+  resize(); initParticles(); drawParticles();
+
+  // ── TYPEWRITER CYCLING ──
+  const phrases = ['that thinks.', 'that scales.', 'for the AI era.', 'faster than ever.', 'that transforms.'];
+  let pi = 0, ci = 0, deleting = false;
+  const el = document.getElementById('cycling-text');
+
+  function typeStep() {
+    const target = phrases[pi];
+    if (!deleting) {
+      ci++;
+      el.textContent = target.slice(0, ci);
+      if (ci === target.length) {
+        deleting = true;
+        setTimeout(typeStep, 2200);
+        return;
+      }
+      setTimeout(typeStep, 65);
+    } else {
+      ci--;
+      el.textContent = target.slice(0, ci);
+      if (ci === 0) {
+        deleting = false;
+        pi = (pi + 1) % phrases.length;
+        setTimeout(typeStep, 300);
+        return;
+      }
+      setTimeout(typeStep, 35);
+    }
+  }
+  setTimeout(typeStep, 1200);
+
+  // ── COUNTER ANIMATION ──
+  let counterVal = 0;
+  setInterval(() => {
+    counterVal = Math.floor(Math.random() * 400) + 600;
+    const cel = document.getElementById('counter-val');
+    if (cel) cel.textContent = counterVal.toLocaleString();
+  }, 1400);
+
+  // ── NAV SCROLL ──
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ── SCROLL REVEALS ──
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ── CTA SUBMIT ──
+  function handleSubmit() {
+    const input = document.getElementById('cta-email');
+    const btn = document.querySelector('.btn-send');
+    const val = input.value.trim();
+    if (!val || !val.includes('@')) {
+      input.style.borderColor = 'rgba(255,80,80,0.5)';
+      input.style.boxShadow = '0 0 0 3px rgba(255,80,80,0.1)';
+      setTimeout(() => { input.style.borderColor = ''; input.style.boxShadow = ''; }, 1500);
+      return;
+    }
+    btn.textContent = '✓ Sent!';
+    btn.style.background = '#28ca41';
+    btn.style.boxShadow = '0 4px 20px rgba(40,202,65,0.35)';
+    input.value = '';
+    setTimeout(() => {
+      btn.textContent = 'Get in touch';
+      btn.style.background = '';
+      btn.style.boxShadow = '';
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
