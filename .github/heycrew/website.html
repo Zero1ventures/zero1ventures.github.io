@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeyCrew — Group Event Planning Made Easy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:      #0ABFBC;
+    --teal-deep: #04514F;
+    --teal-dark: #022322;
+    --yellow:    #FFD93D;
+    --yellow-dim:#FFC107;
+    --white:     #FFFFFF;
+    --off-white: #F0FFFE;
+    --text-dim:  rgba(255,255,255,0.65);
+    --card-bg:   rgba(255,255,255,0.06);
+    --card-border: rgba(255,255,255,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--teal-dark);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(20px);
+    background: rgba(2,35,34,0.8);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: 22px;
+    text-decoration: none;
+    color: var(--white);
+  }
+
+  .nav-logo-icon {
+    width: 36px; height: 36px;
+    background: var(--yellow);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--teal);
+    color: var(--white) !important;
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-weight: 600 !important;
+    transition: transform 0.2s, background 0.2s !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--teal-deep) !important;
+    transform: translateY(-1px);
+    color: var(--white) !important;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 140px 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Gradient orbs */
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(10,191,188,0.15) 0%, transparent 70%);
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 100px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--teal);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-eyebrow span {
+    width: 6px; height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(48px, 8vw, 88px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--yellow);
+    position: relative;
+  }
+
+  .hero h1 em::after {
+    content: '';
+    position: absolute;
+    bottom: 4px; left: 0; right: 0;
+    height: 4px;
+    background: var(--yellow);
+    border-radius: 2px;
+    opacity: 0.4;
+  }
+
+  .hero-sub {
+    font-size: clamp(17px, 2.5vw, 22px);
+    color: var(--text-dim);
+    max-width: 580px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+    font-weight: 300;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 100px;
+    padding: 7px 16px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--yellow);
+    color: var(--teal-dark);
+    padding: 16px 32px;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 32px rgba(255,217,61,0.3);
+    font-family: 'DM Serif Display', serif;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(255,217,61,0.4);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--white);
+    padding: 16px 32px;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1.5px solid var(--card-border);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--teal);
+    background: rgba(10,191,188,0.08);
+  }
+
+  /* ── PHONE MOCKUP ── */
+  .hero-phone {
+    margin-top: 72px;
+    position: relative;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .phone-frame {
+    width: 280px;
+    background: var(--teal-dark);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 40px;
+    padding: 16px;
+    box-shadow:
+      0 40px 80px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(255,255,255,0.05),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    margin: 0 auto;
+  }
+
+  .phone-screen {
+    background: linear-gradient(160deg, var(--teal-deep) 0%, var(--teal-dark) 100%);
+    border-radius: 28px;
+    padding: 24px 20px;
+    min-height: 480px;
+  }
+
+  .phone-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .phone-logo {
+    width: 32px; height: 32px;
+    background: var(--yellow);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .phone-app-name {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: 16px;
+  }
+
+  .phone-event-card {
+    background: linear-gradient(135deg, var(--teal-deep), var(--teal));
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .phone-event-title {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .phone-event-code {
+    font-size: 10px;
+    opacity: 0.65;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  .phone-event-btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .phone-btn {
+    flex: 1;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 7px 4px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .phone-btn.yellow {
+    background: var(--yellow);
+    color: var(--teal-dark);
+  }
+
+  .phone-stats {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .phone-stat {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+
+  .phone-stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--teal);
+  }
+
+  .phone-stat-label {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-top: 2px;
+  }
+
+  .phone-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.5;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .phone-date-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+  }
+
+  .phone-date-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--teal);
+    min-width: 48px;
+  }
+
+  .phone-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .phone-bar {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 3px;
+  }
+
+  .phone-fraction {
+    font-size: 10px;
+    opacity: 0.6;
+  }
+
+  /* Floating emoji avatars */
+  .hero-floaters {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .floater {
+    position: absolute;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 50%;
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    backdrop-filter: blur(10px);
+    animation: float linear infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ── PROBLEM SECTION ── */
+  .problem {
+    padding: 100px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 20px;
+  }
+
+  .problem h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    max-width: 700px;
+    margin: 0 auto 20px;
+  }
+
+  .problem-sub {
+    color: var(--text-dim);
+    font-size: 18px;
+    max-width: 500px;
+    margin: 0 auto 60px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .chaos-cards {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .chaos-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 24px 28px;
+    flex: 1;
+    min-width: 200px;
+    max-width: 240px;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chaos-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+
+  .chaos-emoji {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .chaos-title {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .chaos-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    padding: 100px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .how-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .how-header {
+    text-align: center;
+    margin-bottom: 72px;
+  }
+
+  .how h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 48px;
+    left: calc(16.66% + 24px);
+    right: calc(16.66% + 24px);
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), rgba(10,191,188,0.3));
+    z-index: 0;
+  }
+
+  .step {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 36px 28px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .step:hover {
+    transform: translateY(-4px);
+    border-color: rgba(10,191,188,0.3);
+  }
+
+  .step-number {
+    width: 56px; height: 56px;
+    background: var(--teal);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: 22px;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 8px rgba(10,191,188,0.1);
+  }
+
+  .step h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .step p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ── FEATURES ── */
+  .features {
+    padding: 100px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .features-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .features-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .features h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 32px 28px;
+    transition: transform 0.3s, border-color 0.3s, background 0.3s;
+    cursor: default;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(10,191,188,0.3);
+    background: rgba(10,191,188,0.05);
+  }
+
+  .feature-card.featured {
+    background: linear-gradient(135deg, rgba(10,191,188,0.12), rgba(4,81,79,0.3));
+    border-color: rgba(10,191,188,0.3);
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .feature-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .feature-card.featured .feature-icon {
+    font-size: 64px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .feature-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .feature-tag {
+    display: inline-block;
+    background: rgba(255,217,61,0.15);
+    color: var(--yellow);
+    border: 1px solid rgba(255,217,61,0.3);
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 12px;
+  }
+
+  /* ── USE CASES ── */
+  .usecases {
+    padding: 100px 40px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .usecases h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .usecases-sub {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 18px;
+    margin-bottom: 56px;
+    font-weight: 300;
+  }
+
+  .usecases-scroll {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .usecase-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 100px;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .usecase-pill:hover {
+    border-color: var(--teal);
+    background: rgba(10,191,188,0.08);
+    transform: scale(1.02);
+  }
+
+  .usecase-pill span:first-child {
+    font-size: 22px;
+  }
+
+  /* ── PRICING ── */
+  .pricing {
+    padding: 100px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pricing-inner {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .pricing h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .pricing-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .pricing-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 28px;
+    padding: 40px 36px;
+  }
+
+  .pricing-card.plus {
+    background: linear-gradient(160deg, rgba(255,149,0,0.12), rgba(255,217,61,0.05));
+    border-color: rgba(255,149,0,0.3);
+    position: relative;
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #FF9500, var(--yellow));
+    color: var(--teal-dark);
+    font-family: 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: 11px;
+    padding: 5px 16px;
+    border-radius: 100px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .pricing-plan {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .pricing-price {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .pricing-price sup {
+    font-size: 24px;
+    vertical-align: super;
+    font-weight: 600;
+  }
+
+  .pricing-period {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 36px;
+  }
+
+  .pricing-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 14px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .pricing-features li:last-child {
+    border-bottom: none;
+  }
+
+  .check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(10,191,188,0.15);
+    color: var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .check.gold {
+    background: rgba(255,149,0,0.15);
+    color: #FF9500;
+  }
+
+  .pricing-btn {
+    display: block;
+    text-align: center;
+    padding: 15px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    font-family: 'DM Serif Display', serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .pricing-btn.free {
+    background: rgba(255,255,255,0.08);
+    color: var(--white);
+    border: 1.5px solid var(--card-border);
+  }
+
+  .pricing-btn.free:hover {
+    background: rgba(255,255,255,0.12);
+  }
+
+  .pricing-btn.premium {
+    background: linear-gradient(90deg, #FF9500, var(--yellow));
+    color: var(--teal-dark);
+    box-shadow: 0 8px 24px rgba(255,149,0,0.3);
+  }
+
+  .pricing-btn.premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(255,149,0,0.4);
+  }
+
+  /* ── TESTIMONIALS / SOCIAL PROOF ── */
+  .social {
+    padding: 100px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .social h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 56px;
+  }
+
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .testimonial {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: left;
+  }
+
+  .testimonial-stars {
+    color: var(--yellow);
+    font-size: 16px;
+    margin-bottom: 14px;
+    letter-spacing: 2px;
+  }
+
+  .testimonial-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .testimonial-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .testimonial-name {
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .testimonial-role {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ── FINAL CTA ── */
+  .cta-section {
+    padding: 120px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(10,191,188,0.1) 0%, transparent 60%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    line-height: 1.05;
+  }
+
+  .cta-section p {
+    font-size: 18px;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .cta-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--card-border);
+    padding: 48px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-logo {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+
+  .footer-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+    margin: 0 40px;
+    max-width: calc(100% - 80px);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 24px 60px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card.featured { grid-column: span 1; flex-direction: column; }
+    .steps { grid-template-columns: 1fr; }
+    .steps::before { display: none; }
+    .pricing-cards { grid-template-columns: 1fr; }
+    .social-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .problem, .how, .features, .usecases, .pricing, .social, .cta-section {
+      padding: 72px 24px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="heycrew_icon.png" alt="HeyCrew logo" style="width:36px;height:36px;border-radius:10px;object-fit:cover;">
+    HeyCrew
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#download" class="nav-cta">Download Free</a></li>
+  </ul>
+</nav>
+
+<!-- FLOATING EMOJIS -->
+<div class="hero-floaters">
+  <div class="floater" style="left:8%;animation-duration:12s;animation-delay:0s;top:100%">🏖️</div>
+  <div class="floater" style="left:18%;animation-duration:15s;animation-delay:3s;top:100%">🎉</div>
+  <div class="floater" style="left:75%;animation-duration:11s;animation-delay:1s;top:100%">✈️</div>
+  <div class="floater" style="left:85%;animation-duration:14s;animation-delay:5s;top:100%">🥂</div>
+  <div class="floater" style="left:55%;animation-duration:13s;animation-delay:7s;top:100%">🎮</div>
+  <div class="floater" style="left:35%;animation-duration:16s;animation-delay:2s;top:100%">🍕</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span></span>
+    No accounts. No chaos. Just planning.
+  </div>
+
+  <h1>Group planning<br>that <em>actually</em><br>works.</h1>
+
+  <p class="hero-sub">
+    HeyCrew makes it effortless to plan trips, dinners, parties and events with your group — without the endless group texts, spreadsheets, or "who's organising this?" confusion.
+  </p>
+
+  <div class="hero-badges">
+    <div class="badge"><div class="badge-dot"></div> Free to start</div>
+    <div class="badge"><div class="badge-dot"></div> No account needed</div>
+    <div class="badge"><div class="badge-dot"></div> iOS &amp; Android</div>
+  </div>
+
+  <div class="hero-ctas">
+    <a href="#download" class="btn-primary">
+      📱 Download Free
+    </a>
+    <a href="#how" class="btn-secondary">
+      See how it works →
+    </a>
+  </div>
+
+  <!-- Phone mockup -->
+  <div class="hero-phone">
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="phone-header">
+          <img src="heycrew_icon.png" alt="HeyCrew logo" style="width:32px;height:32px;border-radius:9px;object-fit:cover;">
+          <div class="phone-app-name">HeyCrew</div>
+        </div>
+
+        <div class="phone-event-card">
+          <div style="font-size:24px;margin-bottom:6px">🏖️</div>
+          <div class="phone-event-title">Summer Beach Trip</div>
+          <div class="phone-event-code">BEACH-4829</div>
+          <div class="phone-event-btns">
+            <div class="phone-btn">📋 Copy</div>
+            <div class="phone-btn yellow">📤 Invite</div>
+            <div class="phone-btn">👥 Contacts</div>
+          </div>
+        </div>
+
+        <div class="phone-stats">
+          <div class="phone-stat">
+            <div class="phone-stat-num">8</div>
+            <div class="phone-stat-label">Members</div>
+          </div>
+          <div class="phone-stat">
+            <div class="phone-stat-num">12</div>
+            <div class="phone-stat-label">Ideas</div>
+          </div>
+          <div class="phone-stat">
+            <div class="phone-stat-num">6</div>
+            <div class="phone-stat-label">Dates</div>
+          </div>
+        </div>
+
+        <div class="phone-section-title">📅 Best Dates</div>
+        <div class="phone-date-row">
+          <div class="phone-date-label">June 14</div>
+          <div class="phone-bar-wrap"><div class="phone-bar" style="width:87%"></div></div>
+          <div class="phone-fraction">7/8</div>
+        </div>
+        <div class="phone-date-row">
+          <div class="phone-date-label">June 21</div>
+          <div class="phone-bar-wrap"><div class="phone-bar" style="width:62%"></div></div>
+          <div class="phone-fraction">5/8</div>
+        </div>
+        <div class="phone-date-row">
+          <div class="phone-date-label">June 28</div>
+          <div class="phone-bar-wrap"><div class="phone-bar" style="width:37%"></div></div>
+          <div class="phone-fraction">3/8</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="reveal">
+    <div class="section-label">Sound familiar?</div>
+    <h2>Planning with a group<br>shouldn't be <em style="color:var(--yellow);font-style:normal">this hard</em></h2>
+    <p class="problem-sub">Everyone has an opinion. Nobody has time. And the group chat is a disaster.</p>
+  </div>
+
+  <div class="chaos-cards reveal">
+    <div class="chaos-card">
+      <span class="chaos-emoji">📱</span>
+      <div class="chaos-title">Endless group texts</div>
+      <div class="chaos-desc">100 messages deep and you still don't know who's coming or when.</div>
+    </div>
+    <div class="chaos-card">
+      <span class="chaos-emoji"><img src="heycrew_icon.png" alt="HeyCrew" style="width:32px;height:32px;border-radius:9px;object-fit:cover;"></span>
+      <div class="chaos-title">Date confusion</div>
+      <div class="chaos-desc">Five different people, five different schedules, zero consensus.</div>
+    </div>
+    <div class="chaos-card">
+      <span class="chaos-emoji">💬</span>
+      <div class="chaos-title">Scattered ideas</div>
+      <div class="chaos-desc">Great suggestions lost in chats, notes apps and forgotten emails.</div>
+    </div>
+    <div class="chaos-card">
+      <span class="chaos-emoji">😤</span>
+      <div class="chaos-title">One person does everything</div>
+      <div class="chaos-desc">The organiser ends up chasing everyone for answers. Every. Single. Time.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="how-header reveal">
+      <div class="section-label">How it works</div>
+      <h2>Three steps to<br>a plan everyone loves</h2>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Create your event</h3>
+        <p>Pick an emoji, name your event, set some dates. Takes 30 seconds. No account, no email, no hassle.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Invite your group</h3>
+        <p>Share a code or link. Your group joins instantly on their own phone — no sign-ups required for anyone.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Plan together</h3>
+        <p>Everyone marks availability, votes on ideas, and the app surfaces the best dates and top picks automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <div class="features-header reveal">
+      <div class="section-label">Features</div>
+      <h2>Everything your group<br>needs. Nothing it doesn't.</h2>
+    </div>
+
+    <div class="features-grid reveal">
+      <div class="feature-card featured">
+        <span class="feature-icon"><img src="heycrew_icon.png" alt="HeyCrew" style="width:40px;height:40px;border-radius:12px;object-fit:cover;"></span>
+        <div>
+          <h3>Smart Availability Calendar</h3>
+          <p>Every member marks when they're free. HeyCrew automatically finds the dates with the most overlap and ranks them — no spreadsheets, no back-and-forth, no guessing.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">💡</span>
+        <h3>Collaborative Ideas Board</h3>
+        <p>Suggest hotels, restaurants, activities and more. The group votes, the best ideas rise to the top. Organised by category — Where, Stay, Eat, Do and more.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🗺️</span>
+        <h3>Itinerary Builder</h3>
+        <p>Turn your group's best ideas into a day-by-day timeline. Assign tasks, track to-dos, and see conflicts flagged automatically.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🗳️</span>
+        <h3>Group Polls</h3>
+        <p>Can't decide? Put it to a vote. Create polls on anything — best destination, which restaurant, which hotel. Results update live.</p>
+        <span class="feature-tag">⭐ Plus</span>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">💬</span>
+        <h3>Event Chat</h3>
+        <p>A dedicated chat for your group. @mentions, link previews, real-time messages — separate from your main chats so nothing gets lost.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">📤</span>
+        <h3>Export &amp; Share</h3>
+        <p>Export your plan as a PDF or CSV. Sync confirmed dates to your calendar. Share your itinerary with anyone in one tap.</p>
+        <span class="feature-tag">⭐ Plus</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- USE CASES -->
+<section class="usecases">
+  <div class="reveal">
+    <div class="section-label">Built for every occasion</div>
+    <h2>Whatever you're planning,<br>HeyCrew has you covered</h2>
+    <p class="usecases-sub">From weekend getaways to weekly dinners — if there's a group, there's a reason to use HeyCrew!</p>
+  </div>
+
+  <div class="usecases-scroll reveal">
+    <div class="usecase-pill"><span>✈️</span> Group Trips</div>
+    <div class="usecase-pill"><span>🥗</span> Group Lunches</div>
+    <div class="usecase-pill"><span>🎉</span> Birthday Parties</div>
+    <div class="usecase-pill"><span>💍</span> Bachelorette Parties</div>
+    <div class="usecase-pill"><span>🎓</span> Reunions</div>
+    <div class="usecase-pill"><span>🚢</span> Cruises</div>
+    <div class="usecase-pill"><span>🏕️</span> Camping Trips</div>
+    <div class="usecase-pill"><span>🍹</span> Happy Hours</div>
+    <div class="usecase-pill"><span>🎮</span> Game Nights</div>
+    <div class="usecase-pill"><span>🌺</span> Girls Trips</div>
+    <div class="usecase-pill"><span>⚽</span> Sports Events</div>
+    <div class="usecase-pill"><span>🎬</span> Movie Nights</div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <div class="pricing-header reveal">
+      <div class="section-label">Pricing</div>
+      <h2>Start free.<br>Upgrade when you need it.</h2>
+    </div>
+
+    <div class="pricing-cards reveal">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-plan">Free Forever</div>
+        <div class="pricing-price"><sup>$</sup>0</div>
+        <div class="pricing-period">No credit card. No catch.</div>
+        <ul class="pricing-features">
+          <li><div class="check">✓</div> Up to 5 group members</li>
+          <li><div class="check">✓</div> Up to 5 ideas per event</li>
+          <li><div class="check">✓</div> Availability calendar</li>
+          <li><div class="check">✓</div> Voting on ideas</li>
+          <li><div class="check">✓</div> Event chat (15 messages)</li>
+          <li><div class="check">✓</div> Itinerary builder</li>
+          <li><div class="check">✓</div> Share via code or link</li>
+          <li><div class="check">✓</div> Up to 5 events</li>
+          <li><div class="check">✓</div> Events expire after 30 days</li>
+        </ul>
+        <a href="#download" class="pricing-btn free">Download Free</a>
+      </div>
+
+      <!-- Plus -->
+      <div class="pricing-card plus">
+        <div class="pricing-badge">BEST VALUE</div>
+        <div class="pricing-plan">HeyCrew Plus</div>
+        <div class="pricing-price"><sup>$</sup>2.99</div>
+        <div class="pricing-period">per month · or $24.99/year · cancel anytime</div>
+        <ul class="pricing-features">
+          <li><div class="check gold">✓</div> Everything in Free</li>
+          <li><div class="check gold">✓</div> Recurring events (weekly, biweekly, monthly)</li>
+          <li><div class="check gold">✓</div> Unlimited group members</li>
+          <li><div class="check gold">✓</div> Unlimited ideas</li>
+          <li><div class="check gold">✓</div> Unlimited chat messages</li>
+          <li><div class="check gold">✓</div> Unlimited events</li>
+          <li><div class="check gold">✓</div> Group polls</li>
+          <li><div class="check gold">✓</div> PDF &amp; CSV export</li>
+          <li><div class="check gold">✓</div> Calendar sync</li>
+          <li><div class="check gold">✓</div> Pinned announcements</li>
+          <li><div class="check gold">✓</div> Join password protection</li>
+          <li><div class="check gold">✓</div> Custom event colors</li>
+        </ul>
+        <a href="#download" class="pricing-btn premium">Get HeyCrew Plus</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SOCIAL PROOF -->
+<section class="social">
+  <h2 class="reveal">Loved by planners everywhere</h2>
+  <div class="social-grid reveal">
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"We used this for our girls trip to Miami and it was a game changer. No more 200-message group chats just to pick a restaurant."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🌺</div>
+        <div>
+          <div class="testimonial-name">Sarah M.</div>
+          <div class="testimonial-role">Girls Trip Organiser</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Finally an app where everyone actually participates. The availability calendar alone saved our group trip. Worth every penny of Plus."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">✈️</div>
+        <div>
+          <div class="testimonial-name">James T.</div>
+          <div class="testimonial-role">Annual Group Trip Planner</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"I organise our friend group's monthly dinners and HeyCrew has made it so much easier. No accounts for my less tech-savvy friends — they love it."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🍽️</div>
+        <div>
+          <div class="testimonial-name">Priya K.</div>
+          <div class="testimonial-role">Monthly Dinner Host</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FINAL CTA -->
+<section class="cta-section" id="download">
+  <h2 class="reveal">Ready to plan<br>something <em style="color:var(--teal);font-style:normal">great</em>?</h2>
+  <p class="reveal">Create your first event in 30 seconds. Free forever. No account required.</p>
+
+  <div class="hero-ctas reveal">
+    <a href="#" class="btn-primary">
+      🍎 Download on App Store
+    </a>
+    <a href="#" class="btn-secondary">
+      🤖 Get on Google Play
+    </a>
+  </div>
+
+  <p class="cta-note reveal">Free to download · Available on iOS and Android · No account needed</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">
+    <img src="heycrew_icon.png" alt="HeyCrew logo" style="width:28px;height:28px;border-radius:8px;object-fit:cover;">
+    HeyCrew
+  </a>
+
+  <ul class="footer-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="/privacy">Privacy Policy</a></li>
+    <li><a href="/terms">Terms of Service</a></li>
+    <li><a href="mailto:support@zero1co.com">Support</a></li>
+  </ul>
+
+  <div class="footer-copy">© 2026 HeyCrew. All rights reserved.</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
