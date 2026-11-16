@@ -190,7 +190,7 @@
         ${f("Sample estimate", l.estimate_low ? money(l.estimate_low) + " – " + money(l.estimate_high) : null)}
         ${f("Source", l.source ? esc([l.source.utm_source, l.source.utm_campaign, l.source.referrer].filter(Boolean).join(" · ") || "direct") : null)}
       </dl>
-      ${l.alert_opt_in ? `<div class="alertbox"><b>FEMA map-change alerts on</b> since ${esc(new Date(l.report_requested_at).toLocaleDateString())}. Baseline: Zone ${esc(l.alert_baseline?.flood_zone)}${l.alert_baseline?.map_id ? `, map ${esc(l.alert_baseline.map_id)}` : ""}${l.alert_baseline?.map_version ? ` v${esc(l.alert_baseline.map_version)}` : ""}.${l.alert_last_checked_at ? `<br>Last check ${esc(new Date(l.alert_last_checked_at).toLocaleString())}: ${esc(l.alert_last_result)}` : "<br>Not checked yet."}</div>` : ""}
+      ${l.alert_opt_in ? `<div class="alertbox"><b>FEMA map-change alerts on</b> since ${esc(new Date(l.report_requested_at).toLocaleDateString())}. Baseline: Zone ${esc(l.alert_baseline?.flood_zone)}${l.alert_baseline?.map_id ? `, map ${esc(l.alert_baseline.map_id)}` : ""}${l.alert_baseline?.map_version ? `, study ${esc(l.alert_baseline.map_version)}` : ""}.${l.alert_last_checked_at ? `<br>Last check ${esc(new Date(l.alert_last_checked_at).toLocaleString())}: ${esc(l.alert_last_result)}` : "<br>Not checked yet."}</div>` : ""}
       <div class="consentbox">${l.chat_consent_at ? `<b>Chat recording notice accepted</b> ${esc(new Date(l.chat_consent_at).toLocaleString())}<br>` : ""}${l.consent_contact
         ? `<b>Contact consent given</b> ${esc(new Date(l.consent_at).toLocaleString())}<br>“${esc(l.consent_text)}”`
         : (l.email || l.phone ? "No phone/SMS consent. Email follow-up only." : "No contact info yet.")}</div>
