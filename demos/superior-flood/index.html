@@ -467,7 +467,7 @@
       ${j.bfe_note ? `<p>${esc(j.bfe_note)}</p>` : ""}
       <div class="ralert"><b>Map-change alerts are on.</b> We'll email ${esc(email)} if FEMA changes the flood zone or map for this address.</div>
       <div class="ractions"><button class="btn js-estimate" type="button">Get a sample estimate</button><button class="btn outline js-again" type="button">Check another address</button></div>
-      <div class="rmeta">Source: FEMA National Flood Hazard Layer${j.map_id ? `, map ${esc(j.map_id)}` : ""}${j.zone_subtype ? ` · ${esc(j.zone_subtype)}` : ""}. A copy of this report has been sent to your email.</div>
+      <div class="rmeta">Source: FEMA National Flood Hazard Layer${j.map_id ? `, map ${esc(j.map_id)}` : ""}${j.zone_subtype ? ` · ${esc(j.zone_subtype)}` : ""}. In the live version, a copy of this report is emailed to you. (Demo: email delivery is simulated.)</div>
     </div>`;
     box.querySelector(".js-estimate").onclick = () => open(j.address);
     box.querySelector(".js-again").onclick = () => location.reload();
