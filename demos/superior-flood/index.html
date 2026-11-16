@@ -133,6 +133,7 @@
   .typing{display:inline-flex;gap:4px;padding:13px 14px}
   .typing span{width:7px;height:7px;border-radius:50%;background:#8fb3cc;animation:b 1s infinite}
   .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+  .typing .tlabel{font-style:normal;font-size:12.5px;color:var(--muted);margin-left:8px;align-self:center}
   @keyframes b{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-4px);opacity:1}}
   .chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 16px 10px;background:#fbfdff}
   .chip{background:#fff;border:1.5px solid var(--blue);color:var(--blue);border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:600}
@@ -341,7 +342,10 @@
   function bot(t) { return add("bot", fmt(t)); }
   function me(t) { return add("me", esc(t)); }
   function sys(t) { return add("sys", esc(t)); }
-  function typing() { const d = add("bot typing", "<span></span><span></span><span></span>"); return () => d.remove(); }
+  function typing(label) {
+    const d = add("bot typing", "<span></span><span></span><span></span>" + (label ? `<em class="tlabel">${esc(label)}</em>` : ""));
+    return () => d.remove();
+  }
 
   function setChips(list, actions = []) {
     chips.innerHTML = "";
@@ -403,7 +407,8 @@
   async function call(payload, echo) {
     busy = true; sendBtn.disabled = true; setChips([]);
     if (echo) me(echo);
-    const stop = typing();
+    const looksAddr = payload.message && /\d+\s+\w+/.test(payload.message) && !lastLead.flood_zone;
+    const stop = typing(payload.contact ? "Calculating your sample estimate…" : looksAddr ? "Checking FEMA flood maps…" : "");
     try {
       const r = await fetch(CFG.FUNCTIONS_URL + "/sf-chat", {
         method: "POST", headers: { "content-type": "application/json" },
