@@ -73,6 +73,31 @@
   .why-item h3{color:var(--blue);font-size:19px;margin-bottom:8px;text-align:center}
   .why-item p{margin:0;color:var(--muted);text-align:center}
 
+  .report{background:#fff;border-top:1px solid var(--line)}
+  .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  @media (max-width:900px){.report-grid{grid-template-columns:1fr;gap:28px}}
+  .report h2{font-size:clamp(26px,3.2vw,34px);color:var(--blue);font-weight:800;margin-bottom:12px}
+  .report .intro p{color:var(--muted);font-size:17px;margin:0 0 16px}
+  .report .intro ul{margin:0;padding-left:20px;color:var(--ink)}
+  .report .intro li{margin:6px 0}
+  .rform{border:1px solid var(--line);border-radius:12px;padding:24px;background:#fafcfd}
+  .rform label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:12px 0 5px}
+  .rform label:first-child{margin-top:0}
+  .rform input[type=text],.rform input[type=email],.rform input[type=tel]{width:100%;border:1px solid #cfd9e2;border-radius:8px;padding:12px;font:inherit;font-size:15px;outline:0;background:#fff}
+  .rform input:focus{border-color:var(--blue)}
+  .rform .consent{margin-top:14px}
+  .rform .btn{width:100%;margin-top:16px}
+  .rform .rerr{color:#c0392b;font-size:13px;margin-top:10px;min-height:18px}
+  .rresult{border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:12px;padding:24px;background:#fff}
+  .rresult .rhead{display:flex;gap:16px;align-items:center;margin-bottom:14px}
+  .rresult .rz{font-family:"Open Sans",sans-serif;font-weight:800;font-size:32px;color:var(--navy);border:2px solid var(--blue);border-radius:10px;padding:6px 16px;min-width:76px;text-align:center}
+  .rresult .rrisk{font-family:"Open Sans",sans-serif;font-weight:700;font-size:18px;color:var(--navy)}
+  .rresult .raddr{font-size:13.5px;color:var(--muted)}
+  .rresult p{margin:0 0 10px;font-size:15px}
+  .rresult .rmeta{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:14px}
+  .rresult .ralert{background:var(--ice);border-radius:8px;padding:12px 14px;font-size:14px;margin-top:14px}
+  .rresult .ractions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .hero .alt{display:block;margin-top:14px;color:#d7ecfa;font-size:14.5px}
   .notes{border-top:1px solid var(--line)}
   .notes .sec-head h2{color:var(--navy)}
   .notes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 56px}
@@ -206,7 +231,36 @@
       </div>
       <button class="btn" type="submit">Quote</button>
     </form>
+    <a class="alt" href="#report">Not ready for a quote? Get a free flood zone report</a>
     <div class="note">A superior alternative to NFIP: comprehensive coverage at a fair and reasonable price.</div>
+  </div>
+</section>
+
+<section class="report" id="report">
+  <div class="wrap report-grid">
+    <div class="intro">
+      <h2>Free flood zone report</h2>
+      <p>Find out your property's official FEMA flood zone in seconds, then get alerts if FEMA ever changes the flood map for your address.</p>
+      <ul>
+        <li>Your FEMA flood zone and what it means in plain English</li>
+        <li>Whether lenders typically require flood insurance</li>
+        <li>Base flood elevation, where FEMA has one</li>
+        <li>An email alert if your flood map changes, so a new zone never catches you at renewal</li>
+      </ul>
+    </div>
+    <div id="reportBox">
+      <form class="rform" id="reportForm" autocomplete="off">
+        <label for="rAddr">Property address</label>
+        <input id="rAddr" type="text" placeholder="Street, city, state, ZIP">
+        <label for="rEmail">Email</label>
+        <input id="rEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        <label for="rPhone">Mobile phone <span style="font-weight:400">(optional)</span></label>
+        <input id="rPhone" type="tel" autocomplete="tel">
+        <label class="consent"><input type="checkbox" id="rConsent"><span>Email me my flood zone report and alert me if FEMA changes the flood map for this address. Superior Flood may also contact me about flood insurance at the email (and phone, if provided) above, including by automated text or call. Consent is not a condition of purchase. Msg &amp; data rates may apply. Unsubscribe or reply STOP anytime.</span></label>
+        <button class="btn" type="submit">Get my free report</button>
+        <div class="rerr" id="rErr"></div>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -382,6 +436,44 @@
   });
   $("#composer").addEventListener("submit", (e) => { e.preventDefault(); const v = input.value.trim(); if (v) send(v); });
 
+  // ---- Free flood zone report + map-change alerts ----
+  $("#reportForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = $("#rErr"); err.textContent = "";
+    const address = $("#rAddr").value.trim(), email = $("#rEmail").value.trim(), phone = $("#rPhone").value.trim();
+    if (!address || !/^\S+@\S+\.\S+$/.test(email)) { err.textContent = "Please enter the property address and a valid email."; return; }
+    if (!$("#rConsent").checked) { err.textContent = "Please check the box so we can email your report and alerts."; return; }
+    const btn = $("#reportForm .btn"); btn.disabled = true; btn.textContent = "Checking FEMA flood maps…";
+    try {
+      const r = await fetch(CFG.FUNCTIONS_URL + "/sf-report", {
+        method: "POST", headers: { "content-type": "application/json", "x-demo-pass": demoPass },
+        body: JSON.stringify({ action: "report", session_id: "rpt-" + sessionId, address, email, phone, alerts: true, contact_consent: true, source }),
+      });
+      const j = await r.json();
+      if (!r.ok || j.error) { err.textContent = j.error || "Something went wrong. Please try again."; return; }
+      showReport(j, email);
+    } catch (_e) {
+      err.textContent = "We couldn't reach the flood map service. Please try again.";
+    } finally { btn.disabled = false; btn.textContent = "Get my free report"; }
+  });
+
+  function showReport(j, email) {
+    const box = $("#reportBox");
+    box.innerHTML = `<div class="rresult">
+      <div class="rhead"><div class="rz">${esc(String(j.flood_zone || "?").toUpperCase())}</div>
+        <div><div class="rrisk">${esc(j.risk)}</div><div class="raddr">${esc(j.address)}</div></div></div>
+      <p>${esc(j.summary)}</p>
+      <p>${esc(j.lender)}</p>
+      ${j.bfe_note ? `<p>${esc(j.bfe_note)}</p>` : ""}
+      <div class="ralert"><b>Map-change alerts are on.</b> We'll email ${esc(email)} if FEMA changes the flood zone or map for this address.</div>
+      <div class="ractions"><button class="btn js-estimate" type="button">Get a sample estimate</button><button class="btn outline js-again" type="button">Check another address</button></div>
+      <div class="rmeta">Source: FEMA National Flood Hazard Layer${j.map_id ? `, map ${esc(j.map_id)}` : ""}${j.zone_subtype ? ` · ${esc(j.zone_subtype)}` : ""}. A copy of this report has been sent to your email.</div>
+    </div>`;
+    box.querySelector(".js-estimate").onclick = () => open(j.address);
+    box.querySelector(".js-again").onclick = () => location.reload();
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   const esc = (s) => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fmt = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
   const money = (n) => "$" + Number(n).toLocaleString("en-US");
@@ -398,10 +490,26 @@
 
   function setChips(list, actions = []) {
     chips.innerHTML = "";
-    list.forEach(t => { const b = document.createElement("button"); b.className = "chip"; b.textContent = t; b.onclick = () => send(t); chips.appendChild(b); });
+    list.forEach(t => {
+      const b = document.createElement("button"); b.className = "chip"; b.textContent = t;
+      b.onclick = () => (/just browsing/i.test(t) ? offerReport() : send(t));
+      chips.appendChild(b);
+    });
     if (actions.includes("call")) {
       const a = document.createElement("a"); a.className = "chip call"; a.href = "tel:" + CFG.PHONE_TEL; a.textContent = "Call " + CFG.PHONE_DISPLAY; chips.appendChild(a);
     }
+  }
+
+  function offerReport() {
+    me("I'm just browsing");
+    bot("No problem! Want a **free flood zone report** for your address instead? We'll email it to you and alert you if FEMA ever changes your flood map.");
+    chips.innerHTML = "";
+    const b = document.createElement("button"); b.className = "chip"; b.textContent = "Get my free report";
+    b.onclick = () => { close(); const a = $("#heroAddr").value.trim(); if (a) $("#rAddr").value = a; $("#report").scrollIntoView({ behavior: "smooth" }); setTimeout(() => $("#rAddr").focus(), 500); };
+    chips.appendChild(b);
+    const c = document.createElement("button"); c.className = "chip"; c.textContent = "Actually, let's get an estimate";
+    c.onclick = () => { chips.innerHTML = ""; bot("Great! What's the property address?"); input.focus(); };
+    chips.appendChild(c);
   }
 
   function progress(l) {

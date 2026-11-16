@@ -22,7 +22,7 @@
   .live{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
   .live i{width:8px;height:8px;border-radius:50%;background:#2ecc71;box-shadow:0 0 0 3px rgba(46,204,113,.25)}
   main{max-width:1320px;margin:0 auto;padding:20px}
-  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:18px}
   @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
   .kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}
   .kpi small{color:var(--muted);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
@@ -44,6 +44,10 @@
   tr.row.sel td{background:var(--ice)}
   .who b{display:block}
   .who small{color:var(--muted)}
+  .src{display:inline-block;margin-left:6px;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--blue-d);border:1px solid #b8d6ea;border-radius:4px;padding:1px 5px;vertical-align:1px}
+  .alertbox{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px;margin:10px 0;background:#fafcfe}
+  .checkbtn{border:1px solid var(--blue);background:#fff;color:var(--blue);border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+  .checkbtn:hover{background:var(--blue);color:#fff}
   .score{display:inline-grid;place-items:center;width:40px;height:30px;border-radius:6px;font-family:"Open Sans",sans-serif;font-weight:800;font-size:14px;color:#fff}
   .pill{display:inline-block;border-radius:4px;padding:3px 8px;font-size:11.5px;font-weight:700;white-space:nowrap}
   .s-new{background:#eef1f4;color:#5b6773}.s-engaged{background:#e8f3fb;color:var(--blue-d)}.s-contact_captured{background:#fff3ea;color:#b4561d}.s-estimated{background:#eaf7ef;color:var(--green)}.s-agent_requested{background:#fdeaea;color:var(--red)}
@@ -88,12 +92,13 @@
     <div class="kpi"><small>Estimates shown</small><b id="k3">0</b><em>sample ranges</em></div>
     <div class="kpi"><small>Agent requests</small><b id="k4">0</b><em>call these first</em></div>
     <div class="kpi"><small>Abandoned w/ address</small><b id="k5">0</b><em>follow-up list</em></div>
+    <div class="kpi"><small>Report + alert signups</small><b id="k6">0</b><em>watching FEMA maps</em></div>
   </div>
   <div class="grid">
     <div class="panel">
-      <div class="panel-h"><h2>Leads</h2>
+      <div class="panel-h"><h2>Leads <button class="checkbtn" id="checkMaps" title="Re-check every alert subscriber against current FEMA maps (runs weekly in production)">Run FEMA map check</button></h2>
         <div class="filters" id="filters">
-          <button data-f="all" class="on">All</button><button data-f="hot">Hot (70+)</button><button data-f="agent_requested">Agent requested</button><button data-f="abandoned">Abandoned</button>
+          <button data-f="all" class="on">All</button><button data-f="hot">Hot (70+)</button><button data-f="agent_requested">Agent requested</button><button data-f="abandoned">Abandoned</button><button data-f="report">Report signups</button>
         </div>
       </div>
       <div style="overflow-x:auto"><table>
@@ -144,15 +149,16 @@
     $("#k3").textContent = leads.filter(l => l.estimate_low).length;
     $("#k4").textContent = leads.filter(l => l.status === "agent_requested").length;
     $("#k5").textContent = leads.filter(l => l.address && !has(l)).length;
+    $("#k6").textContent = leads.filter(l => l.lead_source === "flood_report").length;
 
     const list = leads.filter(l =>
       filter === "all" ? true : filter === "hot" ? (l.lead_score || 0) >= 70 :
-      filter === "abandoned" ? (l.address && !has(l)) : l.status === filter);
+      filter === "abandoned" ? (l.address && !has(l)) : filter === "report" ? l.lead_source === "flood_report" : l.status === filter);
     $("#empty").style.display = list.length ? "none" : "";
     $("#rows").innerHTML = list.map(l => `
       <tr class="row ${sel === l.session_id ? "sel" : ""}" data-s="${esc(l.session_id)}">
         <td><span class="score" style="background:${scoreColor(l.lead_score || 0)}">${l.lead_score || 0}</span></td>
-        <td class="who"><b>${esc(l.name || "Anonymous visitor")}</b><small>${esc(l.email || l.phone || "no contact yet")}</small></td>
+        <td class="who"><b>${esc(l.name || (l.lead_source === "flood_report" ? l.email : "Anonymous visitor"))}</b>${l.lead_source === "flood_report" ? `<span class="src">Report</span>` : ""}<small>${esc(l.email || l.phone || "no contact yet")}</small></td>
         <td>${esc(l.address || "—")}<br><small style="color:var(--muted)">${l.flood_zone ? "Zone " + esc(l.flood_zone) : ""}${l.property_type ? " · " + esc(nice(l.property_type)) : ""}</small></td>
         <td>${l.estimate_low ? money(l.estimate_low) + "–" + money(l.estimate_high).slice(1) : "—"}</td>
         <td><span class="pill s-${esc(l.status)}">${label[l.status] || esc(l.status)}</span></td>
@@ -166,7 +172,7 @@
     const j = await api("?session=" + encodeURIComponent(s)); const l = j.lead || {};
     const f = (k, v) => v !== null && v !== undefined && v !== "" ? `<dt>${k}</dt><dd>${v}</dd>` : "";
     $("#detail").innerHTML = `
-      <h3>${esc(l.name || "Anonymous visitor")}</h3>
+      <h3>${esc(l.name || (l.lead_source === "flood_report" ? l.email : "Anonymous visitor"))}</h3>
       <div style="color:var(--muted);font-size:13px">Lead score ${l.lead_score || 0} · <span class="pill s-${esc(l.status)}">${label[l.status] || ""}</span> · started ${ago(l.created_at)}</div>
       ${l.summary ? `<div class="sum"><b>Summary:</b> ${esc(l.summary)}</div>` : ""}
       <div class="actions">
@@ -184,11 +190,24 @@
         ${f("Sample estimate", l.estimate_low ? money(l.estimate_low) + " – " + money(l.estimate_high) : null)}
         ${f("Source", l.source ? esc([l.source.utm_source, l.source.utm_campaign, l.source.referrer].filter(Boolean).join(" · ") || "direct") : null)}
       </dl>
+      ${l.alert_opt_in ? `<div class="alertbox"><b>FEMA map-change alerts on</b> since ${esc(new Date(l.report_requested_at).toLocaleDateString())}. Baseline: Zone ${esc(l.alert_baseline?.flood_zone)}${l.alert_baseline?.map_id ? `, map ${esc(l.alert_baseline.map_id)}` : ""}${l.alert_baseline?.map_version ? ` v${esc(l.alert_baseline.map_version)}` : ""}.${l.alert_last_checked_at ? `<br>Last check ${esc(new Date(l.alert_last_checked_at).toLocaleString())}: ${esc(l.alert_last_result)}` : "<br>Not checked yet."}</div>` : ""}
       <div class="consentbox">${l.chat_consent_at ? `<b>Chat recording notice accepted</b> ${esc(new Date(l.chat_consent_at).toLocaleString())}<br>` : ""}${l.consent_contact
         ? `<b>Contact consent given</b> ${esc(new Date(l.consent_at).toLocaleString())}<br>“${esc(l.consent_text)}”`
         : (l.email || l.phone ? "No phone/SMS consent. Email follow-up only." : "No contact info yet.")}</div>
       <div class="tx">${(j.messages || []).map(m => `<div class="m ${esc(m.role)}">${esc(m.content)}</div>`).join("")}</div>`;
   }
+
+  $("#checkMaps").addEventListener("click", async () => {
+    const b = $("#checkMaps"); b.disabled = true; b.textContent = "Checking FEMA maps…";
+    try {
+      const r = await fetch(CFG.FUNCTIONS_URL + "/sf-report", { method: "POST", headers: { "content-type": "application/json", "x-demo-key": key }, body: JSON.stringify({ action: "check" }) });
+      const j = await r.json();
+      const changed = (j.results || []).filter(x => x.result.startsWith("CHANGED")).length;
+      b.textContent = `Checked ${j.checked || 0}: ${changed} changed`;
+      await load();
+    } catch (e) { b.textContent = "Check failed"; }
+    setTimeout(() => { b.disabled = false; b.textContent = "Run FEMA map check"; }, 4000);
+  });
 
   $("#filters").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
