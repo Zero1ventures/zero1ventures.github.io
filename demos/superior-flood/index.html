@@ -85,6 +85,19 @@
   footer{padding:28px 0;font-size:13px;color:var(--muted);background:#f6f8fa;border-top:1px solid var(--line)}
   footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
+  /* ---------- passcode gate ---------- */
+  body.locked > *:not(#gate){display:none!important}
+  #gate{display:none}
+  body.locked #gate{display:flex;min-height:100vh;align-items:center;justify-content:center;background:#f4f7fa;padding:24px}
+  .gate-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:32px 28px;max-width:400px;width:100%;text-align:center}
+  .gate-box h1{font-size:20px;color:var(--navy);margin-bottom:6px}
+  .gate-box p{color:var(--muted);font-size:14.5px;margin:0 0 18px}
+  .gate-box input{width:100%;border:1px solid #cfd9e2;border-radius:8px;padding:12px;font:inherit;font-size:16px;outline:0;margin-bottom:12px}
+  .gate-box input:focus{border-color:var(--blue)}
+  .gate-box .btn{width:100%}
+  .gate-box .gerr{color:#c0392b;font-size:13px;margin-top:10px;min-height:18px}
+  .gate-box small{display:block;color:var(--muted);font-size:12px;margin-top:14px}
+
   /* ---------- chat ---------- */
   .launcher{position:fixed;right:24px;bottom:24px;z-index:40;background:var(--orange);color:#fff;border:0;border-radius:10px;padding:14px 20px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.18);display:flex;align-items:center;gap:10px}
   .launcher:hover{background:var(--orange-d)}
@@ -144,7 +157,18 @@
   .zone p{margin:0;font-size:13px;color:var(--muted)}
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div id="gate">
+  <form class="gate-box" id="gateForm" autocomplete="off">
+    <h1>Private concept demo</h1>
+    <p>Prepared by Zero1 Ventures for Superior Flood, Inc. Enter the passcode to continue.</p>
+    <input id="gatePass" type="password" placeholder="Passcode" aria-label="Passcode" autofocus>
+    <button class="btn" type="submit">Continue</button>
+    <div class="gerr" id="gateErr"></div>
+    <small>Not affiliated with or endorsed by Superior Flood, Inc.</small>
+  </form>
+</div>
 
 <div class="demo-bar">
   <strong>Concept demo by Zero1 Ventures.</strong> Not affiliated with or endorsed by Superior Flood, Inc. Sample estimates only, no real quotes. Please use test info.
@@ -259,6 +283,27 @@
 (() => {
   const CFG = window.SF_CONFIG;
   const $ = (s) => document.querySelector(s);
+
+  // ---- passcode gate (the chat backend checks the passcode too) ----
+  const PASS_HASH = "d8864644c15d33be9c0aef2d08c8fc105adc040de488b0116882a2cc6aa4492b";
+  let demoPass = "";
+  try { demoPass = sessionStorage.getItem("sf_demo_pass") || ""; } catch (e) {}
+  async function sha256(t) {
+    const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+  }
+  async function tryUnlock(p, quiet) {
+    if (p && await sha256(p.trim().toLowerCase()) === PASS_HASH) {
+      demoPass = p.trim().toLowerCase();
+      try { sessionStorage.setItem("sf_demo_pass", demoPass); } catch (e) {}
+      document.body.classList.remove("locked");
+      return true;
+    }
+    if (!quiet) { $("#gateErr").textContent = "That passcode didn't work."; $("#gatePass").select(); }
+    return false;
+  }
+  $("#gateForm").addEventListener("submit", (e) => { e.preventDefault(); tryUnlock($("#gatePass").value); });
+  if (demoPass) tryUnlock(demoPass, true);
   const msgs = $("#msgs"), chips = $("#chips"), input = $("#input"), sendBtn = $("#send");
   const chat = $("#chat"), launcher = $("#launcher");
   const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)).replace(/[^a-zA-Z0-9-]/g, "");
@@ -368,7 +413,7 @@
     const stop = typing(payload.contact ? "Calculating your sample estimate…" : looksAddr ? "Checking FEMA flood maps…" : "");
     try {
       const r = await fetch(CFG.FUNCTIONS_URL + "/sf-chat", {
-        method: "POST", headers: { "content-type": "application/json" },
+        method: "POST", headers: { "content-type": "application/json", "x-demo-pass": demoPass },
         body: JSON.stringify({ session_id: sessionId, source, ...payload }),
       });
       const j = await r.json();
