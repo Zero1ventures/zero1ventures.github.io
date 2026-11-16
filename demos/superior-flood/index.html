@@ -692,7 +692,10 @@
     if (l.flood_zone && l.flood_zone !== "unknown") {
       $("#pZone").style.display = ""; $("#pZoneCode").textContent = String(l.flood_zone).toUpperCase(); $("#pZoneRisk").textContent = zoneRisk(l.flood_zone);
     }
+    const noPolicy = String(l.current_carrier || "").toLowerCase() === "none";
     $("#pRows").innerHTML = PROFILE.map(([k, label, f]) => {
+      if (noPolicy && (k === "current_premium" || k === "renewal_date")) return `<div class="prow"><dt>${label}</dt><dd>N/A</dd></div>`;
+      if (noPolicy && k === "current_carrier") return `<div class="prow${prev && prev[k] !== l[k] ? " flash" : ""}"><dt>${label}</dt><dd>None</dd></div>`;
       const has = l[k] !== null && l[k] !== undefined && l[k] !== "";
       const changed = has && prev && prev[k] !== l[k];
       return `<div class="prow${changed ? " flash" : ""}"><dt>${label}</dt><dd class="${has ? "" : "empty"}">${has ? esc(String(f(l[k]))) : "—"}</dd></div>`;
