@@ -145,6 +145,12 @@
   .consent input{margin-top:2px;flex:none}
   .card .btn{width:100%;margin-top:12px;padding:12px}
   .card .err{color:#c0392b;font-size:12.5px;margin-top:8px;display:none}
+  .notice h4{margin-bottom:6px}
+  .notice p{margin:0 0 8px;font-size:13.5px;color:#3a4650;line-height:1.5}
+  .notice ul{margin:0 0 4px;padding-left:18px;font-size:13px;color:#3a4650}
+  .notice li{margin:3px 0}
+  .notice .btn{margin-top:10px}
+  .notice a{font-size:12.5px}
   .est{border-left:4px solid var(--orange)}
   .est .tag{font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--orange-d)}
   .est .range{font-family:"Open Sans",sans-serif;font-weight:800;font-size:26px;color:var(--navy);line-height:1.2;margin-top:2px}
@@ -275,7 +281,7 @@
     <input id="input" type="text" placeholder="Type your message" aria-label="Message" maxlength="1200">
     <button id="send" type="submit">Send</button>
   </form>
-  <div class="fine">AI assistant. Estimates are samples, not quotes. Demo: please use test info.</div>
+  <div class="fine">AI assistant. Chat is recorded. Never share SSNs, bank or card numbers. Estimates are samples, not quotes.</div>
 </div>
 
 <script src="config.js"></script>
@@ -314,22 +320,63 @@
     landing: location.pathname,
   };
   let busy = false, started = false, lastLead = {}, shownEstimate = false, shownZone = false;
+  let chatConsent = false, pendingPrefill = null;
+
+  // Same patterns the backend uses; redact before anything leaves the browser.
+  function redactSensitive(t) {
+    let redacted = false;
+    let out = t.replace(/\b\d{3}[- ]\d{2}[- ]\d{4}\b/g, () => { redacted = true; return "[removed: SSN]"; });
+    out = out.replace(/(?<![\d-])\d{9}(?![\d-])/g, () => { redacted = true; return "[removed: possible SSN]"; });
+    out = out.replace(/\b(?:\d[ -]?){13,19}\b/g, (m) => {
+      const d = m.replace(/\D/g, ""); let sum = 0, alt = false;
+      for (let i = d.length - 1; i >= 0; i--) { let n = +d[i]; if (alt) { n *= 2; if (n > 9) n -= 9; } sum += n; alt = !alt; }
+      if (d.length >= 13 && sum % 10 === 0) { redacted = true; return "[removed: card number]"; }
+      return m;
+    });
+    return { text: out, redacted };
+  }
 
   document.querySelectorAll(".js-phone").forEach(a => { a.href = "tel:" + CFG.PHONE_TEL; a.textContent = CFG.PHONE_DISPLAY; });
 
   function open(prefill) {
     chat.classList.add("open"); launcher.style.display = "none";
-    if (!started) {
-      started = true;
-      bot("Hi! I can get you a **sample private flood estimate** in about two minutes. What's the property address?");
-      setChips(["I'm just browsing", "Talk to an agent"]);
+    if (!chatConsent) {
+      if (prefill) pendingPrefill = prefill;
+      if (!started) { started = true; consentNotice(); }
+      return;
     }
     if (prefill) send(prefill); else setTimeout(() => input.focus(), 50);
+  }
+
+  function consentNotice() {
+    input.disabled = true; sendBtn.disabled = true;
+    const d = document.createElement("div"); d.className = "card notice";
+    d.innerHTML = `<h4>Before we start</h4>
+      <p>This chat is recorded and stored by Superior Flood and processed by our AI service provider to answer your questions and follow up on your quote.</p>
+      <ul>
+        <li>You're chatting with an AI assistant. A licensed agent is available anytime.</li>
+        <li><b>Never share</b> Social Security numbers, bank or card numbers, or other sensitive information here.</li>
+      </ul>
+      <button class="btn" type="button">I agree, start chat</button>
+      <div style="text-align:center;margin-top:8px"><a class="js-tel" href="#">Prefer to talk? Call ${esc(CFG.PHONE_DISPLAY)}</a></div>`;
+    d.querySelector(".js-tel").href = "tel:" + CFG.PHONE_TEL;
+    d.querySelector("button").onclick = () => {
+      chatConsent = true;
+      d.remove();
+      input.disabled = false; sendBtn.disabled = false;
+      bot("Hi! I can get you a **sample private flood estimate** in about two minutes. What's the property address?");
+      setChips(["I'm just browsing", "Talk to an agent"]);
+      if (pendingPrefill) { const p = pendingPrefill; pendingPrefill = null; send(p); } else input.focus();
+    };
+    msgs.appendChild(d); scroll();
   }
   function close() { chat.classList.remove("open"); launcher.style.display = ""; }
   document.querySelectorAll(".js-open").forEach(b => b.addEventListener("click", () => open()));
   $("#closeBtn").addEventListener("click", close);
-  $("#agentBtn").addEventListener("click", () => { if (!busy) send("I'd like to talk to a licensed agent."); });
+  $("#agentBtn").addEventListener("click", () => {
+    if (!chatConsent) { location.href = "tel:" + CFG.PHONE_TEL; return; }
+    if (!busy) send("I'd like to talk to a licensed agent.");
+  });
   $("#heroForm").addEventListener("submit", (e) => {
     e.preventDefault(); const v = $("#heroAddr").value.trim(); open(v || undefined);
   });
@@ -401,9 +448,11 @@
   }
 
   async function send(text) {
-    if (busy) return;
+    if (busy || !chatConsent) return;
     input.value = "";
-    await call({ message: text }, text);
+    const r = redactSensitive(text);
+    if (r.redacted) sys("For your security, we removed what looked like sensitive information. Please don't share SSNs, bank or card numbers in chat.");
+    await call({ message: r.text }, r.text);
   }
 
   async function call(payload, echo) {
@@ -414,7 +463,7 @@
     try {
       const r = await fetch(CFG.FUNCTIONS_URL + "/sf-chat", {
         method: "POST", headers: { "content-type": "application/json", "x-demo-pass": demoPass },
-        body: JSON.stringify({ session_id: sessionId, source, ...payload }),
+        body: JSON.stringify({ session_id: sessionId, source, chat_consent: chatConsent, ...payload }),
       });
       const j = await r.json();
       stop();
