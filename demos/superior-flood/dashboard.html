@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Lead Inbox — Superior Flood Concept Demo (Zero1)</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--blue:#1180c3;--blue-d:#0b5f93;--blue-dd:#073f63;--orange:#ea7c36;--ice:#eef7fe;--ink:#26333d;--muted:#6b7480;--line:#dce6ee;--bg:#f4f8fb;--green:#1b7a43;--red:#c0392b}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Raleway,system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+  h1,h2,h3{font-family:"Open Sans",sans-serif;margin:0}
+  .demo-bar{background:#14212b;color:#d9e6ef;font-size:13px;padding:8px 16px;text-align:center}
+  .demo-bar a{color:#ffc39b;font-weight:600;text-decoration:none}
+  header{background:#fff;border-bottom:1px solid var(--line)}
+  .top{max-width:1320px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap}
+  .top h1{font-size:19px;color:var(--blue-dd)}
+  .top h1 span{color:var(--muted);font-weight:600;font-size:14px;margin-left:8px}
+  .live{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
+  .live i{width:8px;height:8px;border-radius:50%;background:#2ecc71;box-shadow:0 0 0 3px rgba(46,204,113,.25)}
+  main{max-width:1320px;margin:0 auto;padding:20px}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
+  @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+  .kpi small{color:var(--muted);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+  .kpi b{display:block;font-family:"Open Sans",sans-serif;font-size:28px;color:var(--blue-dd);margin-top:4px}
+  .kpi em{font-style:normal;font-size:13px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
+  @media(max-width:1000px){.grid{grid-template-columns:1fr}}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .panel-h{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .panel-h h2{font-size:15px;color:var(--blue-dd)}
+  .filters{display:flex;gap:6px;flex-wrap:wrap}
+  .filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+  .filters button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:9px 12px;background:#fafcfe;border-bottom:1px solid var(--line)}
+  td{padding:11px 12px;border-bottom:1px solid #edf2f6;vertical-align:top}
+  tr.row{cursor:pointer}
+  tr.row:hover td{background:#f7fbfe}
+  tr.row.sel td{background:var(--ice)}
+  .who b{display:block}
+  .who small{color:var(--muted)}
+  .score{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;font-family:"Open Sans",sans-serif;font-weight:800;font-size:14px;color:#fff}
+  .pill{display:inline-block;border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:700;white-space:nowrap}
+  .s-new{background:#eef1f4;color:#5b6773}.s-engaged{background:#e8f3fb;color:var(--blue-d)}.s-contact_captured{background:#fff3ea;color:#b4561d}.s-estimated{background:#eaf7ef;color:var(--green)}.s-agent_requested{background:#fdeaea;color:var(--red)}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+  .detail{padding:16px}
+  .detail h3{font-size:18px;color:var(--blue-dd)}
+  .detail .sum{background:var(--ice);border-radius:10px;padding:10px 12px;margin:12px 0;font-size:14px}
+  dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:12px 0;font-size:13.5px}
+  dt{color:var(--muted);font-weight:600}
+  dd{margin:0}
+  .consentbox{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted);margin:10px 0}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+  .actions a{background:var(--orange);color:#fff;text-decoration:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13.5px}
+  .actions a.alt{background:var(--blue)}
+  .tx{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;display:flex;flex-direction:column;gap:7px;max-height:440px;overflow:auto}
+  .tx .m{padding:8px 11px;border-radius:12px;font-size:13.5px;max-width:88%;white-space:pre-wrap}
+  .tx .user{background:var(--blue);color:#fff;align-self:flex-end}
+  .tx .assistant{background:var(--ice)}
+  .tx .event{align-self:center;font-size:11.5px;color:var(--muted);background:#f4f6f8;max-width:100%}
+  .gate{max-width:380px;margin:80px auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;text-align:center}
+  .gate input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px;font:inherit;margin:14px 0 10px}
+  .gate button{width:100%;background:var(--orange);color:#fff;border:0;border-radius:10px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
+  .gate p{color:var(--muted);font-size:14px;margin:8px 0 0}
+</style>
+</head>
+<body>
+<div class="demo-bar"><strong>Concept demo by Zero1 Ventures.</strong> Agent view of leads captured by the AI assistant. Test data only. <a href="index.html">← Back to the assistant</a></div>
+<header><div class="top"><h1>Superior Flood · Lead Inbox <span>concept</span></h1><div class="live"><i></i><span id="updated">Live · refreshes every 10s</span></div></div></header>
+
+<div id="gate" class="gate" style="display:none">
+  <h3 style="color:var(--blue-dd)">Demo access</h3>
+  <p>Enter the demo passcode from Zero1.</p>
+  <input id="key" type="password" placeholder="Passcode" autocomplete="off">
+  <button id="go">Open inbox</button>
+  <p id="gateErr" style="color:var(--red);display:none">That passcode didn't work.</p>
+</div>
+
+<main id="app" style="display:none">
+  <div class="kpis">
+    <div class="kpi"><small>Conversations</small><b id="k1">0</b><em>visitors who engaged</em></div>
+    <div class="kpi"><small>Contacts captured</small><b id="k2">0</b><em id="k2r">0% capture rate</em></div>
+    <div class="kpi"><small>Estimates shown</small><b id="k3">0</b><em>sample ranges</em></div>
+    <div class="kpi"><small>Agent requests</small><b id="k4">0</b><em>call these first</em></div>
+    <div class="kpi"><small>Abandoned w/ address</small><b id="k5">0</b><em>follow-up list</em></div>
+  </div>
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-h"><h2>Leads</h2>
+        <div class="filters" id="filters">
+          <button data-f="all" class="on">All</button><button data-f="hot">Hot (70+)</button><button data-f="agent_requested">Agent requested</button><button data-f="abandoned">Abandoned</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Score</th><th>Lead</th><th>Property</th><th>Estimate</th><th>Status</th><th>Updated</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+      <div class="empty" id="empty" style="display:none">No leads yet. <a href="index.html">Start a conversation</a> to see one appear here.</div>
+    </div>
+    <div class="panel"><div class="panel-h"><h2>Lead detail</h2></div><div class="detail" id="detail"><div class="empty">Select a lead to see the details and full transcript.</div></div></div>
+  </div>
+</main>
+
+<script src="config.js"></script>
+<script>
+(() => {
+  const CFG = window.SF_CONFIG; const $ = s => document.querySelector(s);
+  let key = ""; try { key = sessionStorage.getItem("sf_demo_key") || ""; } catch (e) {}
+  let leads = [], sel = null, filter = "all";
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const money = n => n ? "$" + Number(n).toLocaleString("en-US") : "—";
+  const label = { new: "New", engaged: "Engaged", contact_captured: "Contact captured", estimated: "Estimate shown", agent_requested: "Agent requested" };
+  const ago = t => { const s = (Date.now() - new Date(t)) / 1000; return s < 60 ? "just now" : s < 3600 ? Math.floor(s / 60) + "m ago" : s < 86400 ? Math.floor(s / 3600) + "h ago" : new Date(t).toLocaleDateString(); };
+  const scoreColor = s => s >= 70 ? "#c0392b" : s >= 40 ? "#ea7c36" : "#8fa3b3";
+  const nice = v => String(v ?? "").replace(/_/g, " ");
+
+  async function api(q = "") {
+    const r = await fetch(CFG.FUNCTIONS_URL + "/sf-leads" + q, { headers: { "x-demo-key": key } });
+    if (r.status === 401) throw new Error("auth");
+    return r.json();
+  }
+
+  async function load() {
+    try {
+      const j = await api(); leads = j.leads || [];
+      $("#gate").style.display = "none"; $("#app").style.display = "";
+      render(); $("#updated").textContent = "Live · updated " + new Date().toLocaleTimeString();
+      if (sel) detail(sel, true);
+    } catch (e) {
+      if (e.message === "auth") { $("#app").style.display = "none"; $("#gate").style.display = ""; if (key) $("#gateErr").style.display = "block"; }
+    }
+  }
+
+  function render() {
+    const has = l => l.email || l.phone;
+    $("#k1").textContent = leads.length;
+    const cap = leads.filter(has).length;
+    $("#k2").textContent = cap; $("#k2r").textContent = (leads.length ? Math.round(100 * cap / leads.length) : 0) + "% capture rate";
+    $("#k3").textContent = leads.filter(l => l.estimate_low).length;
+    $("#k4").textContent = leads.filter(l => l.status === "agent_requested").length;
+    $("#k5").textContent = leads.filter(l => l.address && !has(l)).length;
+
+    const list = leads.filter(l =>
+      filter === "all" ? true : filter === "hot" ? (l.lead_score || 0) >= 70 :
+      filter === "abandoned" ? (l.address && !has(l)) : l.status === filter);
+    $("#empty").style.display = list.length ? "none" : "";
+    $("#rows").innerHTML = list.map(l => `
+      <tr class="row ${sel === l.session_id ? "sel" : ""}" data-s="${esc(l.session_id)}">
+        <td><span class="score" style="background:${scoreColor(l.lead_score || 0)}">${l.lead_score || 0}</span></td>
+        <td class="who"><b>${esc(l.name || "Anonymous visitor")}</b><small>${esc(l.email || l.phone || "no contact yet")}</small></td>
+        <td>${esc(l.address || "—")}<br><small style="color:var(--muted)">${l.flood_zone ? "Zone " + esc(l.flood_zone) : ""}${l.property_type ? " · " + esc(nice(l.property_type)) : ""}</small></td>
+        <td>${l.estimate_low ? money(l.estimate_low) + "–" + money(l.estimate_high).slice(1) : "—"}</td>
+        <td><span class="pill s-${esc(l.status)}">${label[l.status] || esc(l.status)}</span></td>
+        <td style="color:var(--muted);white-space:nowrap">${ago(l.updated_at)}</td>
+      </tr>`).join("");
+    document.querySelectorAll("tr.row").forEach(tr => tr.onclick = () => detail(tr.dataset.s));
+  }
+
+  async function detail(s, quiet) {
+    sel = s; if (!quiet) render();
+    const j = await api("?session=" + encodeURIComponent(s)); const l = j.lead || {};
+    const f = (k, v) => v !== null && v !== undefined && v !== "" ? `<dt>${k}</dt><dd>${v}</dd>` : "";
+    $("#detail").innerHTML = `
+      <h3>${esc(l.name || "Anonymous visitor")}</h3>
+      <div style="color:var(--muted);font-size:13px">Lead score ${l.lead_score || 0} · <span class="pill s-${esc(l.status)}">${label[l.status] || ""}</span> · started ${ago(l.created_at)}</div>
+      ${l.summary ? `<div class="sum">📝 ${esc(l.summary)}</div>` : ""}
+      <div class="actions">
+        ${l.phone ? `<a href="tel:${esc(l.phone)}">📞 Call</a>` : ""}
+        ${l.email ? `<a class="alt" href="mailto:${esc(l.email)}?subject=${encodeURIComponent("Your Superior Flood estimate")}">✉️ Email</a>` : ""}
+      </div>
+      <dl>
+        ${f("Email", esc(l.email))}${f("Phone", esc(l.phone))}${f("Address", esc(l.address))}
+        ${f("Flood zone", esc(l.flood_zone))}${f("Property", esc(nice(l.property_type)))}${f("Occupancy", esc(nice(l.occupancy)))}
+        ${f("Year built", esc(l.year_built))}${f("Foundation", esc(nice(l.foundation)))}
+        ${f("Lender requires", l.mortgage_required === null || l.mortgage_required === undefined ? null : (l.mortgage_required ? "Yes" : "No"))}
+        ${f("Current carrier", esc(l.current_carrier))}${f("Current premium", l.current_premium ? money(l.current_premium) + "/yr" : null)}
+        ${f("Renewal", esc(l.renewal_date))}${f("Building cov.", l.building_coverage ? money(l.building_coverage) : null)}
+        ${f("Contents cov.", l.contents_coverage ? money(l.contents_coverage) : null)}
+        ${f("Sample estimate", l.estimate_low ? money(l.estimate_low) + " – " + money(l.estimate_high) : null)}
+        ${f("Source", l.source ? esc([l.source.utm_source, l.source.utm_campaign, l.source.referrer].filter(Boolean).join(" · ") || "direct") : null)}
+      </dl>
+      <div class="consentbox">${l.consent_contact
+        ? `✅ <b>Contact consent given</b> ${esc(new Date(l.consent_at).toLocaleString())}<br>“${esc(l.consent_text)}”`
+        : (l.email || l.phone ? "⚠️ No phone/SMS consent. Email follow-up only." : "No contact info yet.")}</div>
+      <div class="tx">${(j.messages || []).map(m => `<div class="m ${esc(m.role)}">${esc(m.content)}</div>`).join("")}</div>`;
+  }
+
+  $("#filters").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    filter = b.dataset.f; document.querySelectorAll("#filters button").forEach(x => x.classList.toggle("on", x === b)); render();
+  });
+  const go = () => { key = $("#key").value.trim(); try { sessionStorage.setItem("sf_demo_key", key); } catch (e) {} load(); };
+  $("#go").onclick = go; $("#key").addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+
+  if (key) load(); else $("#gate").style.display = "";
+  setInterval(() => { if (key && $("#app").style.display !== "none") load(); }, 10000);
+})();
+</script>
+</body>
+</html>
