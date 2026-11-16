@@ -673,15 +673,35 @@
 
   // ---- live property profile + step tracker ----
   const nice = (v) => String(v).replace(/_/g, " ").replace(/^\w/, c => c.toUpperCase());
+  const yn = v => v ? "Yes" : "No";
+  const pick = (m) => v => m[v] || nice(v);
+  // [field, label, format, alwaysShow]
   const PROFILE = [
-    ["property_type", "Property", v => nice(v)],
-    ["occupancy", "Use", v => ({ primary: "Primary home", secondary: "Second home", rental: "Rental", vacant: "Vacant" }[v] || nice(v))],
-    ["year_built", "Built", v => v],
-    ["foundation", "Foundation", v => nice(v)],
-    ["mortgage_required", "Lender requires", v => v ? "Yes" : "No"],
-    ["current_carrier", "Current policy", v => nice(v)],
-    ["current_premium", "Current premium", v => money(v) + "/yr"],
-    ["renewal_date", "Renews", v => v],
+    ["shopping_reason", "Looking to", pick({ buying_home: "Buy a home", renewal_shopping: "Renew / shop policy", lender_required: "Meet lender requirement", exploring: "Explore options" }), true],
+    ["closing_date", "Closing date", v => v],
+    ["property_type", "Property", v => nice(v), true],
+    ["occupancy", "Use", pick({ primary: "Primary home", secondary: "Second home", rental: "Rental", vacant: "Vacant" }), true],
+    ["units", "Units", v => v],
+    ["tenant_occupied", "Tenants", yn],
+    ["hoa_building_policy", "HOA building policy", pick({ yes: "Yes", no: "No", unsure: "Not sure" })],
+    ["year_built", "Built", v => v, true],
+    ["floors", "Floors", v => v],
+    ["square_feet", "Square feet", v => Number(v).toLocaleString("en-US")],
+    ["foundation", "Foundation", pick({ elevated_piers: "Elevated (piers)", elevated_enclosed: "Elevated (enclosed)" }), true],
+    ["steps_to_door", "Steps to front door", v => v, true],
+    ["basement_or_enclosure", "Below first floor", pick({ none: "Nothing", finished_basement: "Finished basement", unfinished_basement: "Unfinished basement", enclosure_below: "Enclosed area", unsure: "Not sure" })],
+    ["equipment_elevated", "Equipment raised", yn],
+    ["elevation_certificate", "Elevation certificate", pick({ yes: "Yes", no: "No", unsure: "Not sure" })],
+    ["mortgage_required", "Lender requires", yn, true],
+    ["current_carrier", "Current policy", v => nice(v), true],
+    ["current_premium", "Current premium", v => money(v) + "/yr", true],
+    ["renewal_date", "Renews", v => v, true],
+    ["premium_increased", "Premium went up", yn],
+    ["prior_flood_claims", "Past flood claims", pick({ none: "None", one: "One", multiple: "Multiple", unsure: "Not sure" })],
+    ["building_coverage", "Building coverage", v => money(v)],
+    ["contents_coverage", "Contents coverage", v => money(v)],
+    ["deductible_preference", "Deductible", v => v],
+    ["best_contact_time", "Best time to reach", v => v],
   ];
   function zoneRisk(z) {
     z = String(z || "").toUpperCase();
@@ -693,10 +713,11 @@
       $("#pZone").style.display = ""; $("#pZoneCode").textContent = String(l.flood_zone).toUpperCase(); $("#pZoneRisk").textContent = zoneRisk(l.flood_zone);
     }
     const noPolicy = String(l.current_carrier || "").toLowerCase() === "none";
-    $("#pRows").innerHTML = PROFILE.map(([k, label, f]) => {
+    $("#pRows").innerHTML = PROFILE.map(([k, label, f, always]) => {
       if (noPolicy && (k === "current_premium" || k === "renewal_date")) return `<div class="prow"><dt>${label}</dt><dd>N/A</dd></div>`;
       if (noPolicy && k === "current_carrier") return `<div class="prow${prev && prev[k] !== l[k] ? " flash" : ""}"><dt>${label}</dt><dd>None</dd></div>`;
       const has = l[k] !== null && l[k] !== undefined && l[k] !== "";
+      if (!has && !always) return "";
       const changed = has && prev && prev[k] !== l[k];
       return `<div class="prow${changed ? " flash" : ""}"><dt>${label}</dt><dd class="${has ? "" : "empty"}">${has ? esc(String(f(l[k]))) : "—"}</dd></div>`;
     }).join("");
@@ -708,6 +729,7 @@
     }
     const mp = $("#mprofile");
     const bits = [];
+    if (l.shopping_reason) bits.push(`<b>${esc({ buying_home: "Buying", renewal_shopping: "Renewing", lender_required: "Lender required", exploring: "Exploring" }[l.shopping_reason] || "")}</b>`);
     if (l.flood_zone && l.flood_zone !== "unknown") bits.push(`Zone <b>${esc(String(l.flood_zone).toUpperCase())}</b>`);
     if (l.property_type) bits.push(`<b>${esc(nice(l.property_type))}</b>`);
     if (l.estimate_low) bits.push(`Estimate <b>${money(l.estimate_low)}–${money(l.estimate_high)}</b>/yr`);

@@ -182,7 +182,11 @@
       <dl>
         ${f("Email", esc(l.email))}${f("Phone", esc(l.phone))}${f("Address", esc(l.address))}
         ${f("Flood zone", esc(l.flood_zone))}${f("Property", esc(nice(l.property_type)))}${f("Occupancy", esc(nice(l.occupancy)))}
-        ${f("Year built", esc(l.year_built))}${f("Foundation", esc(nice(l.foundation)))}
+        ${f("Looking to", esc(nice(l.shopping_reason)))}${f("Closing date", esc(l.closing_date))}
+        ${f("Units", esc(l.units))}${f("Tenants", l.tenant_occupied == null ? null : (l.tenant_occupied ? "Yes" : "No"))}${f("HOA building policy", esc(l.hoa_building_policy))}
+        ${f("Year built", esc(l.year_built))}${f("Floors", esc(l.floors))}${f("Square feet", esc(l.square_feet))}${f("Foundation", esc(nice(l.foundation)))}
+        ${f("Steps to door", esc(l.steps_to_door))}${f("Below first floor", esc(nice(l.basement_or_enclosure)))}${f("Equipment raised", l.equipment_elevated == null ? null : (l.equipment_elevated ? "Yes" : "No"))}${f("Elevation cert.", esc(l.elevation_certificate))}
+        ${f("Premium went up", l.premium_increased == null ? null : (l.premium_increased ? "Yes" : "No"))}${f("Past flood claims", esc(l.prior_flood_claims))}${f("Deductible", esc(l.deductible_preference))}${f("Best time", esc(l.best_contact_time))}
         ${f("Lender requires", l.mortgage_required === null || l.mortgage_required === undefined ? null : (l.mortgage_required ? "Yes" : "No"))}
         ${f("Current carrier", esc(l.current_carrier))}${f("Current premium", l.current_premium ? money(l.current_premium) + "/yr" : null)}
         ${f("Renewal", esc(l.renewal_date))}${f("Building cov.", l.building_coverage ? money(l.building_coverage) : null)}
