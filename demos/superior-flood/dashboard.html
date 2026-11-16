@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Lead Inbox — Superior Flood Concept Demo (Zero1)</title>
+<link rel="icon" href="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{--blue:#1180c3;--blue-d:#0b5f93;--blue-dd:#073f63;--orange:#ea7c36;--ice:#eef7fe;--ink:#26333d;--muted:#6b7480;--line:#dce6ee;--bg:#f4f8fb;--green:#1b7a43;--red:#c0392b}
@@ -15,24 +16,25 @@
   .demo-bar a{color:#ffc39b;font-weight:600;text-decoration:none}
   header{background:#fff;border-bottom:1px solid var(--line)}
   .top{max-width:1320px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap}
-  .top h1{font-size:19px;color:var(--blue-dd)}
+  .top h1{font-size:18px;color:var(--blue-dd);display:flex;align-items:center;gap:14px}
+  .top h1 img{height:34px}
   .top h1 span{color:var(--muted);font-weight:600;font-size:14px;margin-left:8px}
   .live{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
   .live i{width:8px;height:8px;border-radius:50%;background:#2ecc71;box-shadow:0 0 0 3px rgba(46,204,113,.25)}
   main{max-width:1320px;margin:0 auto;padding:20px}
   .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
   @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
-  .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}
   .kpi small{color:var(--muted);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
   .kpi b{display:block;font-family:"Open Sans",sans-serif;font-size:28px;color:var(--blue-dd);margin-top:4px}
   .kpi em{font-style:normal;font-size:13px;color:var(--muted)}
   .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
   @media(max-width:1000px){.grid{grid-template-columns:1fr}}
-  .panel{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
   .panel-h{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
   .panel-h h2{font-size:15px;color:var(--blue-dd)}
   .filters{display:flex;gap:6px;flex-wrap:wrap}
-  .filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+  .filters button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
   .filters button.on{background:var(--blue);border-color:var(--blue);color:#fff}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:9px 12px;background:#fafcfe;border-bottom:1px solid var(--line)}
@@ -42,8 +44,8 @@
   tr.row.sel td{background:var(--ice)}
   .who b{display:block}
   .who small{color:var(--muted)}
-  .score{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;font-family:"Open Sans",sans-serif;font-weight:800;font-size:14px;color:#fff}
-  .pill{display:inline-block;border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:700;white-space:nowrap}
+  .score{display:inline-grid;place-items:center;width:40px;height:30px;border-radius:6px;font-family:"Open Sans",sans-serif;font-weight:800;font-size:14px;color:#fff}
+  .pill{display:inline-block;border-radius:4px;padding:3px 8px;font-size:11.5px;font-weight:700;white-space:nowrap}
   .s-new{background:#eef1f4;color:#5b6773}.s-engaged{background:#e8f3fb;color:var(--blue-d)}.s-contact_captured{background:#fff3ea;color:#b4561d}.s-estimated{background:#eaf7ef;color:var(--green)}.s-agent_requested{background:#fdeaea;color:var(--red)}
   .empty{padding:40px;text-align:center;color:var(--muted)}
   .detail{padding:16px}
@@ -54,22 +56,22 @@
   dd{margin:0}
   .consentbox{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted);margin:10px 0}
   .actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-  .actions a{background:var(--orange);color:#fff;text-decoration:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13.5px}
+  .actions a{background:var(--orange);color:#fff;text-decoration:none;border-radius:8px;padding:9px 14px;font-weight:700;font-size:13.5px}
   .actions a.alt{background:var(--blue)}
   .tx{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;display:flex;flex-direction:column;gap:7px;max-height:440px;overflow:auto}
   .tx .m{padding:8px 11px;border-radius:12px;font-size:13.5px;max-width:88%;white-space:pre-wrap}
   .tx .user{background:var(--blue);color:#fff;align-self:flex-end}
   .tx .assistant{background:var(--ice)}
   .tx .event{align-self:center;font-size:11.5px;color:var(--muted);background:#f4f6f8;max-width:100%}
-  .gate{max-width:380px;margin:80px auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;text-align:center}
+  .gate{max-width:380px;margin:80px auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:26px;text-align:center}
   .gate input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px;font:inherit;margin:14px 0 10px}
   .gate button{width:100%;background:var(--orange);color:#fff;border:0;border-radius:10px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
   .gate p{color:var(--muted);font-size:14px;margin:8px 0 0}
 </style>
 </head>
 <body>
-<div class="demo-bar"><strong>Concept demo by Zero1 Ventures.</strong> Agent view of leads captured by the AI assistant. Test data only. <a href="index.html">← Back to the assistant</a></div>
-<header><div class="top"><h1>Superior Flood · Lead Inbox <span>concept</span></h1><div class="live"><i></i><span id="updated">Live · refreshes every 10s</span></div></div></header>
+<div class="demo-bar"><strong>Concept demo by Zero1 Ventures.</strong> Agent view of leads captured by the AI assistant. Test data only. <a href="index.html">Back to the assistant</a></div>
+<header><div class="top"><h1><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/logo-superior.png" alt="Superior Flood Inc.">Lead Inbox <span>concept</span></h1><div class="live"><i></i><span id="updated">Live · refreshes every 10s</span></div></div></header>
 
 <div id="gate" class="gate" style="display:none">
   <h3 style="color:var(--blue-dd)">Demo access</h3>
@@ -166,10 +168,10 @@
     $("#detail").innerHTML = `
       <h3>${esc(l.name || "Anonymous visitor")}</h3>
       <div style="color:var(--muted);font-size:13px">Lead score ${l.lead_score || 0} · <span class="pill s-${esc(l.status)}">${label[l.status] || ""}</span> · started ${ago(l.created_at)}</div>
-      ${l.summary ? `<div class="sum">📝 ${esc(l.summary)}</div>` : ""}
+      ${l.summary ? `<div class="sum"><b>Summary:</b> ${esc(l.summary)}</div>` : ""}
       <div class="actions">
-        ${l.phone ? `<a href="tel:${esc(l.phone)}">📞 Call</a>` : ""}
-        ${l.email ? `<a class="alt" href="mailto:${esc(l.email)}?subject=${encodeURIComponent("Your Superior Flood estimate")}">✉️ Email</a>` : ""}
+        ${l.phone ? `<a href="tel:${esc(l.phone)}">Call</a>` : ""}
+        ${l.email ? `<a class="alt" href="mailto:${esc(l.email)}?subject=${encodeURIComponent("Your Superior Flood estimate")}">Email</a>` : ""}
       </div>
       <dl>
         ${f("Email", esc(l.email))}${f("Phone", esc(l.phone))}${f("Address", esc(l.address))}
@@ -183,8 +185,8 @@
         ${f("Source", l.source ? esc([l.source.utm_source, l.source.utm_campaign, l.source.referrer].filter(Boolean).join(" · ") || "direct") : null)}
       </dl>
       <div class="consentbox">${l.consent_contact
-        ? `✅ <b>Contact consent given</b> ${esc(new Date(l.consent_at).toLocaleString())}<br>“${esc(l.consent_text)}”`
-        : (l.email || l.phone ? "⚠️ No phone/SMS consent. Email follow-up only." : "No contact info yet.")}</div>
+        ? `<b>Contact consent given</b> ${esc(new Date(l.consent_at).toLocaleString())}<br>“${esc(l.consent_text)}”`
+        : (l.email || l.phone ? "No phone/SMS consent. Email follow-up only." : "No contact info yet.")}</div>
       <div class="tx">${(j.messages || []).map(m => `<div class="m ${esc(m.role)}">${esc(m.content)}</div>`).join("")}</div>`;
   }
 

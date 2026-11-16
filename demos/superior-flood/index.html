@@ -4,295 +4,252 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Superior Flood — AI Quote Assistant (Concept Demo by Zero1)</title>
+<title>Superior Flood: AI Quote Assistant (Concept Demo by Zero1)</title>
+<link rel="icon" href="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blue:#1180c3; --blue-d:#0b5f93; --blue-dd:#073f63; --orange:#ea7c36; --orange-d:#d2672a;
-    --ice:#eef7fe; --ink:#3d3d3d; --muted:#6b7480; --line:#dce6ee; --white:#fff;
-    --radius:14px; --shadow:0 18px 50px rgba(7,63,99,.18);
+    --blue:#1180c3; --blue-d:#0b5f93; --navy:#073f63; --orange:#ea7c36; --orange-d:#d2672a;
+    --ice:#eef7fe; --ink:#3d3d3d; --muted:#667080; --line:#dde5ec;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{font-family:Raleway,system-ui,sans-serif;color:var(--ink);background:#fff;line-height:1.55}
-  h1,h2,h3{font-family:"Open Sans",sans-serif;margin:0}
+  h1,h2,h3,h4{font-family:"Open Sans",sans-serif;margin:0}
   a{color:var(--blue)}
   button{font:inherit;cursor:pointer}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 
-  .demo-bar{background:#14212b;color:#d9e6ef;font-size:13px;padding:8px 16px;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;text-align:center}
+  .demo-bar{background:#1d2a33;color:#d5e1ea;font-size:13px;padding:8px 16px;text-align:center}
   .demo-bar strong{color:#fff}
-  .demo-bar a{color:#ffc39b;font-weight:600;text-decoration:none}
+  .demo-bar a{color:#ffc39b;font-weight:600;text-decoration:none;margin-left:10px}
   .demo-bar a:hover{text-decoration:underline}
 
-  header.site{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
-  .wrap{max-width:1160px;margin:0 auto;padding:0 20px}
-  .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
-  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-  .brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--blue-dd));display:grid;place-items:center}
-  .brand-name{font-family:"Open Sans",sans-serif;font-weight:800;color:var(--blue-dd);font-size:20px;letter-spacing:-.2px}
-  .brand-name span{color:var(--blue)}
-  .nav-links{display:flex;gap:26px;align-items:center;font-weight:600;font-size:15px}
+  header.site{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:78px}
+  .logo img{height:44px;width:auto;display:block}
+  .nav-links{display:flex;gap:28px;align-items:center;font-weight:600;font-size:15px}
   .nav-links a{color:var(--ink);text-decoration:none}
   .nav-links a:hover{color:var(--blue)}
-  .phone{background:var(--orange);color:#fff!important;padding:10px 16px;border-radius:999px}
-  .phone:hover{background:var(--orange-d)}
-  @media (max-width:820px){.nav-links a:not(.phone){display:none}}
-
-  .hero{background:
-      radial-gradient(1200px 500px at 85% -10%, rgba(255,255,255,.14), transparent 60%),
-      linear-gradient(160deg,var(--blue) 0%, var(--blue-d) 55%, var(--blue-dd) 100%);
-    color:#edf8fd;position:relative;overflow:hidden}
-  .hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:70px;
-    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'><path d='M0,40 C240,80 480,0 720,30 C960,60 1200,10 1440,35 L1440,70 L0,70 Z' fill='%23ffffff'/></svg>") center/100% 100% no-repeat}
-  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding-top:64px;padding-bottom:110px}
-  @media (max-width:960px){.hero .wrap{grid-template-columns:1fr;padding-top:40px}}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
-  .hero h1{font-size:clamp(34px,5vw,56px);line-height:1.05;font-weight:800;margin:18px 0 16px;color:#fff}
-  .hero h1 em{font-style:normal;color:#ffc39b}
-  .hero p.lead{font-size:18px;max-width:540px;opacity:.95;margin:0 0 26px}
-  .addr{display:flex;background:#fff;border-radius:14px;padding:6px;box-shadow:var(--shadow);max-width:560px}
-  .addr input{flex:1;border:0;outline:0;font:inherit;font-size:16px;padding:14px 14px;color:var(--ink);min-width:0;border-radius:10px}
-  .addr button{background:var(--orange);color:#fff;border:0;border-radius:10px;padding:0 22px;font-weight:700;font-size:16px;white-space:nowrap}
-  .addr button:hover{background:var(--orange-d)}
-  .trust{display:flex;gap:22px;margin-top:20px;font-size:14px;opacity:.92;flex-wrap:wrap}
-  .trust span{display:flex;align-items:center;gap:7px}
-
-  .preview{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;color:var(--ink);max-width:460px;justify-self:end;width:100%}
-  @media (max-width:960px){.preview{justify-self:start}}
-  .hero .wrap>*{min-width:0}
-  @media (max-width:600px){.preview{display:none}.addr{flex-direction:column;gap:6px}.addr button{padding:13px}.hero .wrap{padding-bottom:90px}}
-  .preview-h{display:flex;gap:10px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
-  .preview-b{padding:16px;display:flex;flex-direction:column;gap:10px;font-size:14.5px}
-  .pv{padding:10px 13px;border-radius:14px;max-width:85%}
-  .pv.bot{background:var(--ice);border-top-left-radius:4px}
-  .pv.me{background:var(--blue);color:#fff;align-self:flex-end;border-top-right-radius:4px}
-  .pv.card{background:#fff;border:1px solid var(--line);border-left:4px solid var(--orange);max-width:100%}
-  .pv.card b{font-family:"Open Sans",sans-serif;font-size:22px;color:var(--blue-dd)}
-
-  section{padding:72px 0}
-  .sec-title{text-align:center;max-width:720px;margin:0 auto 42px}
-  .sec-title h2{font-size:clamp(26px,3.4vw,36px);color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.3px}
-  .sec-title p{color:var(--muted);font-size:17px;margin:10px 0 0}
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-  @media (max-width:860px){.steps{grid-template-columns:1fr}}
-  .step{background:var(--ice);border-radius:var(--radius);padding:26px}
-  .num{width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-family:"Open Sans",sans-serif;font-weight:800;margin-bottom:14px}
-  .step h3{font-size:19px;color:var(--blue-dd);margin-bottom:6px}
-  .step p{margin:0;color:var(--muted)}
-  .cta-row{text-align:center;margin-top:34px}
-  .btn{display:inline-block;background:var(--orange);color:#fff;border:0;border-radius:999px;padding:14px 26px;font-weight:700;font-size:16px;text-decoration:none}
+  .btn{display:inline-block;background:var(--orange);color:#fff;border:0;border-radius:10px;padding:13px 24px;font-weight:700;font-size:16px;text-decoration:none;text-align:center}
   .btn:hover{background:var(--orange-d)}
-  .btn.blue{background:var(--blue)}
-  .btn.blue:hover{background:var(--blue-d)}
+  .btn.outline{background:transparent;border:2px solid var(--blue);color:var(--blue);padding:11px 22px}
+  .btn.outline:hover{background:var(--blue);color:#fff}
+  .nav-links .btn{padding:10px 18px;font-size:15px;color:#fff}
+  @media (max-width:820px){.nav-links a:not(.btn){display:none}.logo img{height:36px}}
+
+  .hero{background:linear-gradient(180deg,#0e5b8c 0%,#0a476e 100%);color:#fff;text-align:center}
+  .hero .wrap{padding-top:72px;padding-bottom:84px;max-width:760px}
+  .kicker{font-family:"Open Sans",sans-serif;font-size:14px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#d7ecfa}
+  .hero h1{font-size:clamp(34px,5.2vw,54px);line-height:1.12;font-weight:800;margin:18px 0 18px}
+  .hero h1 span{color:var(--orange)}
+  .hero p.lead{font-size:18px;opacity:.95;margin:0 auto 30px;max-width:620px}
+  .addr-label{font-size:14px;margin-bottom:10px;opacity:.9}
+  .addr{background:#fff;border-radius:10px;display:flex;align-items:center;gap:10px;padding:0 16px;max-width:600px;margin:0 auto}
+  .addr svg{flex:none}
+  .addr input{flex:1;border:0;outline:0;font:inherit;font-size:16px;padding:17px 0;color:var(--ink);min-width:0;background:transparent}
+  .hero .btn{margin-top:18px;min-width:160px}
+  .hero .note{font-size:14px;margin-top:18px;opacity:.85}
+
+  section{padding:76px 0}
+  .sec-head{text-align:center;max-width:680px;margin:0 auto 46px}
+  .sec-head h2{font-size:clamp(26px,3.2vw,34px);color:var(--blue);font-weight:800}
+  .sec-head p{color:var(--muted);font-size:17px;margin:10px 0 0}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+  @media (max-width:860px){.steps{grid-template-columns:1fr;gap:28px}}
+  .step{border-top:3px solid var(--blue);padding-top:20px}
+  .step img{width:30px;height:30px;margin-bottom:12px}
+  .step h3{font-size:19px;color:var(--navy);margin-bottom:6px}
+  .step p{margin:0;color:var(--muted)}
+  .center{text-align:center;margin-top:40px}
 
   .why{background:var(--ice)}
-  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
   @media (max-width:860px){.why-grid{grid-template-columns:1fr}}
-  .why-card{background:#fff;border-radius:var(--radius);padding:26px;border:1px solid var(--line)}
-  .why-card h3{color:var(--blue);font-size:18px;margin-bottom:8px}
-  .why-card p{margin:0;color:var(--muted)}
+  .why-item img{width:100%;max-width:270px;height:auto;display:block;margin:0 auto 18px}
+  .why-item h3{color:var(--blue);font-size:19px;margin-bottom:8px;text-align:center}
+  .why-item p{margin:0;color:var(--muted);text-align:center}
 
-  .pitch{background:#14212b;color:#d9e6ef}
-  .pitch .sec-title h2{color:#fff}
-  .pitch .sec-title p{color:#a9bccb}
-  .pitch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-  @media (max-width:860px){.pitch-grid{grid-template-columns:1fr}}
-  .pitch-item{background:#1c2d3a;border:1px solid #2a4152;border-radius:var(--radius);padding:22px}
-  .pitch-item h3{color:#fff;font-size:17px;margin-bottom:6px;display:flex;gap:10px;align-items:center}
-  .pitch-item h3 i{font-style:normal;background:var(--orange);color:#fff;font-size:12px;border-radius:999px;padding:2px 9px}
-  .pitch-item p{margin:0;color:#a9bccb;font-size:15px}
-  .pitch .cta-row .btn{margin:0 6px 10px}
+  .notes{border-top:1px solid var(--line)}
+  .notes .sec-head h2{color:var(--navy)}
+  .notes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 56px}
+  @media (max-width:860px){.notes-grid{grid-template-columns:1fr}}
+  .note-item{padding:22px 0;border-bottom:1px solid var(--line)}
+  .note-item h3{font-size:17px;color:var(--navy);margin-bottom:6px}
+  .note-item p{margin:0;color:var(--muted);font-size:15.5px}
+  .notes .center .btn{margin:0 6px 10px}
 
-  footer{padding:30px 0;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+  footer{padding:28px 0;font-size:13px;color:var(--muted);background:#f6f8fa;border-top:1px solid var(--line)}
   footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
   /* ---------- chat ---------- */
-  .launcher{position:fixed;right:22px;bottom:22px;z-index:40;background:var(--orange);color:#fff;border:0;border-radius:999px;padding:14px 20px 14px 16px;display:flex;align-items:center;gap:10px;font-weight:700;box-shadow:0 10px 30px rgba(234,124,54,.45)}
+  .launcher{position:fixed;right:24px;bottom:24px;z-index:40;background:var(--orange);color:#fff;border:0;border-radius:10px;padding:14px 20px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.18);display:flex;align-items:center;gap:10px}
   .launcher:hover{background:var(--orange-d)}
-  .launcher .dot{width:9px;height:9px;border-radius:50%;background:#7CFFB2;box-shadow:0 0 0 3px rgba(124,255,178,.3)}
-  .chat{position:fixed;right:22px;bottom:22px;z-index:50;width:400px;height:min(680px,calc(100vh - 44px));background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(7,40,66,.35);display:none;flex-direction:column;overflow:hidden}
+  .chat{position:fixed;right:24px;bottom:24px;z-index:50;width:400px;height:min(680px,calc(100vh - 48px));background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(7,40,66,.3);display:none;flex-direction:column;overflow:hidden;border:1px solid var(--line)}
   .chat.open{display:flex}
-  @media (max-width:520px){.chat{right:0;bottom:0;width:100%;height:100%;border-radius:0}}
-  .chat-h{background:linear-gradient(135deg,var(--blue),var(--blue-dd));color:#fff;padding:14px 14px 14px 16px;display:flex;align-items:center;gap:12px}
-  .avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
+  @media (max-width:520px){.chat{right:0;bottom:0;width:100%;height:100%;border-radius:0;border:0}}
+  .chat-h{background:var(--navy);color:#fff;padding:12px 12px 12px 14px;display:flex;align-items:center;gap:12px}
+  .avatar{width:36px;height:36px;border-radius:8px;background:#fff;display:grid;place-items:center;flex:none;overflow:hidden}
+  .avatar img{width:26px;height:26px;object-fit:contain}
   .chat-h .t{flex:1;min-width:0}
-  .chat-h .t b{display:block;font-family:"Open Sans",sans-serif;font-size:15.5px}
-  .chat-h .t small{opacity:.85;font-size:12.5px}
-  .icon-btn{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:10px;height:34px;padding:0 10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
-  .icon-btn:hover{background:rgba(255,255,255,.24)}
-  .progress{height:4px;background:#dfeaf3}
+  .chat-h .t b{display:block;font-family:"Open Sans",sans-serif;font-size:15px}
+  .chat-h .t small{opacity:.8;font-size:12.5px}
+  .hbtn{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;height:32px;padding:0 10px;font-size:13px;font-weight:600}
+  .hbtn:hover{background:rgba(255,255,255,.12)}
+  .hbtn.x{border:0;font-size:18px;padding:0 8px}
+  .progress{height:3px;background:#e3ebf1}
   .progress i{display:block;height:100%;width:0;background:var(--orange);transition:width .5s ease}
-  .msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#fbfdff}
-  .m{max-width:86%;padding:10px 13px;border-radius:16px;font-size:14.8px;white-space:pre-wrap;word-wrap:break-word;animation:pop .18s ease}
-  @keyframes pop{from{transform:translateY(4px);opacity:0}to{transform:none;opacity:1}}
-  .m.bot{background:var(--ice);border-top-left-radius:5px;color:#26333d}
-  .m.me{background:var(--blue);color:#fff;align-self:flex-end;border-top-right-radius:5px}
+  .msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#fafcfd}
+  .m{max-width:86%;padding:10px 13px;border-radius:10px;font-size:14.8px;white-space:pre-wrap;word-wrap:break-word}
+  .m.bot{background:#fff;border:1px solid var(--line);color:#26333d}
+  .m.me{background:var(--blue);color:#fff;align-self:flex-end}
   .m.sys{align-self:center;background:transparent;color:var(--muted);font-size:12.5px;padding:2px}
-  .typing{display:inline-flex;gap:4px;padding:13px 14px}
-  .typing span{width:7px;height:7px;border-radius:50%;background:#8fb3cc;animation:b 1s infinite}
+  .typing{display:inline-flex;align-items:center;gap:4px;padding:12px 14px}
+  .typing span{width:6px;height:6px;border-radius:50%;background:#8fb3cc;animation:b 1s infinite}
   .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
-  .typing .tlabel{font-style:normal;font-size:12.5px;color:var(--muted);margin-left:8px;align-self:center}
-  @keyframes b{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-4px);opacity:1}}
-  .chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 16px 10px;background:#fbfdff}
-  .chip{background:#fff;border:1.5px solid var(--blue);color:var(--blue);border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:600}
+  .typing .tlabel{font-style:normal;font-size:12.5px;color:var(--muted);margin-left:8px}
+  @keyframes b{0%,60%,100%{opacity:.4}30%{opacity:1}}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 16px 10px;background:#fafcfd}
+  .chip{background:#fff;border:1px solid var(--blue);color:var(--blue);border-radius:8px;padding:7px 12px;font-size:13.5px;font-weight:600}
   .chip:hover{background:var(--blue);color:#fff}
   .chip.call{border-color:var(--orange);background:var(--orange);color:#fff;text-decoration:none}
   .composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:#fff}
-  .composer input{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font:inherit;font-size:15px;outline:0;min-width:0}
+  .composer input{flex:1;border:1px solid #cfd9e2;border-radius:8px;padding:11px 12px;font:inherit;font-size:15px;outline:0;min-width:0}
   .composer input:focus{border-color:var(--blue)}
-  .composer button{background:var(--orange);border:0;color:#fff;border-radius:12px;width:46px;display:grid;place-items:center}
+  .composer button{background:var(--orange);border:0;color:#fff;border-radius:8px;padding:0 16px;font-weight:700;font-size:14px}
   .composer button:disabled{opacity:.5}
   .fine{font-size:11.5px;color:var(--muted);text-align:center;padding:0 12px 10px;background:#fff}
 
-  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;max-width:100%;align-self:stretch;animation:pop .18s ease}
-  .card h4{margin:0 0 10px;font-family:"Open Sans",sans-serif;font-size:15px;color:var(--blue-dd)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;align-self:stretch}
+  .card h4{margin:0 0 8px;font-size:15px;color:var(--navy)}
   .card label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:8px 0 4px}
-  .card input[type=text],.card input[type=email],.card input[type=tel]{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 11px;font:inherit;font-size:14.5px;outline:0}
+  .card input[type=text],.card input[type=email],.card input[type=tel]{width:100%;border:1px solid #cfd9e2;border-radius:8px;padding:10px 11px;font:inherit;font-size:14.5px;outline:0}
   .card input:focus{border-color:var(--blue)}
-  .consent{display:flex;gap:9px;align-items:flex-start;font-size:11.8px;color:var(--muted);margin-top:12px;line-height:1.4}
+  .consent{display:flex;gap:9px;align-items:flex-start;font-size:11.8px;color:var(--muted);margin-top:12px;line-height:1.4;font-weight:400!important}
   .consent input{margin-top:2px;flex:none}
-  .card .btn{width:100%;margin-top:12px;border-radius:10px;padding:12px}
+  .card .btn{width:100%;margin-top:12px;padding:12px}
   .card .err{color:#c0392b;font-size:12.5px;margin-top:8px;display:none}
-  .est{border-left:5px solid var(--orange)}
-  .est .range{font-family:"Open Sans",sans-serif;font-weight:800;font-size:28px;color:var(--blue-dd);line-height:1.1}
+  .est{border-left:4px solid var(--orange)}
+  .est .tag{font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--orange-d)}
+  .est .range{font-family:"Open Sans",sans-serif;font-weight:800;font-size:26px;color:var(--navy);line-height:1.2;margin-top:2px}
   .est .range small{font-size:14px;font-weight:600;color:var(--muted)}
-  .est .tag{display:inline-block;background:#fff3ea;color:var(--orange-d);font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;border-radius:6px;padding:3px 7px;margin-bottom:6px}
-  .est .save{margin-top:8px;font-size:13.5px;color:#1b7a43;font-weight:600}
+  .est .save{margin-top:6px;font-size:13.5px;color:#1b7a43;font-weight:600}
   .est .disc{margin-top:8px;font-size:11.5px;color:var(--muted)}
-  .zone{display:flex;gap:10px;align-items:center}
-  .zone .z{font-family:"Open Sans",sans-serif;font-weight:800;font-size:22px;background:var(--ice);color:var(--blue-dd);border-radius:10px;padding:6px 12px}
+  .zone{display:flex;gap:12px;align-items:center}
+  .zone .z{font-family:"Open Sans",sans-serif;font-weight:800;font-size:22px;color:var(--navy);border:2px solid var(--blue);border-radius:8px;padding:4px 12px;min-width:52px;text-align:center}
+  .zone b{font-size:14px}
   .zone p{margin:0;font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
 
 <div class="demo-bar">
-  <span><strong>Concept demo by Zero1 Ventures.</strong> Not affiliated with or endorsed by Superior Flood, Inc. Sample estimates only, no real quotes. Please use test info.</span>
-  <a href="dashboard.html">View the agent lead inbox →</a>
+  <strong>Concept demo by Zero1 Ventures.</strong> Not affiliated with or endorsed by Superior Flood, Inc. Sample estimates only, no real quotes. Please use test info.
+  <a href="dashboard.html">View the agent lead inbox</a>
 </div>
 
 <header class="site">
   <div class="wrap nav">
-    <a class="brand" href="#">
-      <span class="brand-mark" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 11.5 12 4l9 7.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 18c2 0 2-1.5 4-1.5S8 18 10 18s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5" stroke="#9fd6f7" stroke-width="2" stroke-linecap="round"/></svg>
-      </span>
-      <span class="brand-name">Superior <span>Flood</span></span>
-    </a>
+    <a class="logo" href="#"><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/logo-superior.png" alt="Superior Flood Inc."></a>
     <nav class="nav-links">
       <a href="#how">How it works</a>
       <a href="#why">Why Superior</a>
       <a href="#demo-notes">About this demo</a>
-      <a class="phone js-phone" href="#">1-888-824-0799</a>
+      <a class="btn js-phone" href="#">1-888-824-0799</a>
     </nav>
   </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <div>
-      <span class="eyebrow">⚡ Instant private flood estimate</span>
-      <h1>Save <em>20–50%</em> on your flood insurance</h1>
-      <p class="lead">Enter your property address. Our assistant checks your FEMA flood zone, asks a few quick questions, and gives you a sample estimate in about two minutes. A licensed agent is one tap away.</p>
-      <form class="addr" id="heroForm" autocomplete="off">
-        <input id="heroAddr" type="text" placeholder="Property address, e.g. 123 Bayshore Blvd, Tampa, FL" aria-label="Property address">
-        <button type="submit">Get my estimate</button>
-      </form>
-      <div class="trust">
-        <span>✔ BBB accredited since 2000</span>
-        <span>✔ Flood is all we write</span>
-        <span>✔ Private NFIP alternatives</span>
+    <div class="kicker">Start your Superior Flood quote</div>
+    <h1>Save 20-50% on your <span>flood</span> insurance coverage</h1>
+    <p class="lead">Enter your property address. We'll check your FEMA flood zone, ask a few quick questions, and show you a sample estimate in about two minutes. A licensed agent is always one tap away.</p>
+    <form id="heroForm" autocomplete="off">
+      <div class="addr-label">Enter the property address for the flood insurance quote</div>
+      <div class="addr">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#1180c3" stroke-width="2"/><path d="m20 20-4-4" stroke="#1180c3" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="heroAddr" type="text" placeholder="Property address" aria-label="Property address">
       </div>
-    </div>
-    <div class="preview" aria-hidden="true">
-      <div class="preview-h">
-        <div class="avatar" style="background:var(--ice)">🌊</div>
-        <div><b style="font-family:Open Sans,sans-serif">Superior Flood Assistant</b><br><small style="color:var(--muted)">Usually replies instantly</small></div>
-      </div>
-      <div class="preview-b">
-        <div class="pv me">412 Bay Ave, Clearwater, FL</div>
-        <div class="pv bot">That address is in FEMA <b>Zone AE</b>, a high-risk area. Is it your primary home?</div>
-        <div class="pv me">Yes, and my lender requires it</div>
-        <div class="pv card"><small style="color:var(--orange-d);font-weight:700;font-size:11px;letter-spacing:.4px">SAMPLE ESTIMATE</small><br><b>$1,850 – $3,400</b>/yr<br><small style="color:#1b7a43;font-weight:600">Up to $1,250 less than your current policy</small></div>
-      </div>
-    </div>
+      <button class="btn" type="submit">Quote</button>
+    </form>
+    <div class="note">A superior alternative to NFIP: comprehensive coverage at a fair and reasonable price.</div>
   </div>
 </section>
 
 <section id="how">
   <div class="wrap">
-    <div class="sec-title">
+    <div class="sec-head">
       <h2>How it works</h2>
-      <p>Private flood insurance, simplified. No forms to fight with.</p>
+      <p>Private flood insurance, simplified.</p>
     </div>
     <div class="steps">
-      <div class="step"><div class="num">1</div><h3>Tell us the address</h3><p>We look up your official FEMA flood zone automatically, so you don't have to.</p></div>
-      <div class="step"><div class="num">2</div><h3>Answer a few quick questions</h3><p>Home type, how it's used, and your current policy if you have one. Skip anything you don't know.</p></div>
-      <div class="step"><div class="num">3</div><h3>See your estimate, then talk to an agent</h3><p>Get a sample range instantly. A licensed agent confirms exact carrier pricing and gets your policy to your lender.</p></div>
+      <div class="step"><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/process-quote.svg" alt=""><h3>Tell us the address</h3><p>We look up your official FEMA flood zone automatically, so you don't have to.</p></div>
+      <div class="step"><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/process-review.svg" alt=""><h3>Answer a few questions</h3><p>Home type, how it's used, and your current policy if you have one. Skip anything you don't know.</p></div>
+      <div class="step"><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/process-policy.svg" alt=""><h3>Review your estimate</h3><p>See a sample range right away. A licensed agent confirms exact carrier pricing and gets your policy to your lender.</p></div>
     </div>
-    <div class="cta-row"><button class="btn js-open">Start my estimate</button></div>
+    <div class="center"><button class="btn js-open">Start my estimate</button></div>
   </div>
 </section>
 
 <section class="why" id="why">
   <div class="wrap">
-    <div class="sec-title"><h2>Top-rated flood insurance</h2><p>Expert guidance and exceptional customer service.</p></div>
+    <div class="sec-head"><h2>Top rated flood insurance</h2><p>Expert guidance and exceptional customer service.</p></div>
     <div class="why-grid">
-      <div class="why-card"><h3>Flood insurance specialists</h3><p>All we write is flood, so homeowners get focused guidance from experienced advisors.</p></div>
-      <div class="why-card"><h3>Trusted private insurers</h3><p>Private alternatives to the NFIP for residential and commercial properties, often with broader coverage.</p></div>
-      <div class="why-card"><h3>Highly rated agency</h3><p>BBB accredited since 2000. Real people are available whenever you want them.</p></div>
+      <div class="why-item"><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/benefit-specialists.svg" alt=""><h3>Flood insurance specialists</h3><p>All we write is flood insurance, so homeowners get focused guidance from experienced advisors.</p></div>
+      <div class="why-item"><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/benefit-insurers.svg" alt=""><h3>Trusted flood insurers</h3><p>Private flood insurance alternatives for residential and commercial properties.</p></div>
+      <div class="why-item"><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/benefit-rated.svg" alt=""><h3>Highly rated agency</h3><p>Superior Flood has been a BBB accredited business since 2000.</p></div>
     </div>
   </div>
 </section>
 
-<section class="pitch" id="demo-notes">
+<section class="notes" id="demo-notes">
   <div class="wrap">
-    <div class="sec-title">
+    <div class="sec-head">
       <h2>What this concept adds</h2>
       <p>Prepared by Zero1 Ventures for Superior Flood, Inc. Try the assistant, then open the lead inbox to see what your team would get.</p>
     </div>
-    <div class="pitch-grid">
-      <div class="pitch-item"><h3><i>1</i>Every visitor becomes a lead record</h3><p>The moment someone types an address, a lead is created. Abandoned quotes are no longer lost; they become a follow-up list.</p></div>
-      <div class="pitch-item"><h3><i>2</i>Automatic FEMA flood zone lookup</h3><p>Uses public FEMA flood map data to pre-qualify risk before an agent ever picks up the phone.</p></div>
-      <div class="pitch-item"><h3><i>3</i>Contact captured before the price</h3><p>Name, email, and phone are collected with logged consent language, timestamped for TCPA records.</p></div>
-      <div class="pitch-item"><h3><i>4</i>Scored and summarized for agents</h3><p>Each lead is scored (lender requirement, renewal date, current premium) so agents call the hottest leads first.</p></div>
-      <div class="pitch-item"><h3><i>5</i>Human handoff in one tap</h3><p>"Talk to an agent" is always visible. Production version texts and emails the on-call agent instantly.</p></div>
-      <div class="pitch-item"><h3><i>6</i>Guardrails built in</h3><p>The assistant never invents prices or recommends coverage. Pricing comes only from the rating source; advice goes to licensed agents.</p></div>
+    <div class="notes-grid">
+      <div class="note-item"><h3>Every visitor becomes a lead record</h3><p>The moment someone types an address, a lead is created. Abandoned quotes become a follow-up list instead of disappearing.</p></div>
+      <div class="note-item"><h3>Automatic FEMA flood zone lookup</h3><p>Public FEMA flood map data pre-qualifies risk before an agent ever picks up the phone.</p></div>
+      <div class="note-item"><h3>Contact captured before the price</h3><p>Name, email, and phone are collected with consent language logged and timestamped for TCPA records.</p></div>
+      <div class="note-item"><h3>Scored and summarized for agents</h3><p>Each lead is scored on lender requirement, renewal date, and current premium, so agents call the best leads first.</p></div>
+      <div class="note-item"><h3>Human handoff in one tap</h3><p>"Talk to an agent" is always visible. In production, the on-call agent gets a text and email instantly.</p></div>
+      <div class="note-item"><h3>Guardrails built in</h3><p>The assistant never invents prices or recommends coverage. Pricing comes only from the rating source; advice goes to licensed agents.</p></div>
     </div>
-    <div class="cta-row">
+    <div class="center">
       <button class="btn js-open">Try the assistant</button>
-      <a class="btn blue" href="dashboard.html">Open the lead inbox</a>
+      <a class="btn outline" href="dashboard.html">Open the lead inbox</a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <span>Concept demo © Zero1 Ventures LLC · zero1co.com</span>
-    <span>Superior Flood name used for proposal purposes only. Estimates shown are illustrative.</span>
+    <span>Concept demo by Zero1 Ventures LLC · zero1co.com</span>
+    <span>Superior Flood name and logo used for proposal purposes only. Estimates shown are illustrative.</span>
   </div>
 </footer>
 
 <!-- chat -->
-<button class="launcher js-open" id="launcher"><span class="dot"></span>Get a flood estimate</button>
+<button class="launcher js-open" id="launcher">Get a flood estimate</button>
 
 <div class="chat" id="chat" role="dialog" aria-label="Superior Flood quote assistant">
   <div class="chat-h">
-    <div class="avatar">🌊</div>
+    <div class="avatar"><img src="https://www.mysuperiorflood.com/wp-content/themes/superior-flood-marketing/assets/images/favicon.png" alt=""></div>
     <div class="t"><b>Superior Flood Assistant</b><small>AI assistant · agents on standby</small></div>
-    <button class="icon-btn" id="agentBtn" title="Talk to a licensed agent">👤 Agent</button>
-    <button class="icon-btn" id="closeBtn" aria-label="Close chat">✕</button>
+    <button class="hbtn" id="agentBtn" title="Talk to a licensed agent">Talk to an agent</button>
+    <button class="hbtn x" id="closeBtn" aria-label="Close chat">&times;</button>
   </div>
   <div class="progress"><i id="prog"></i></div>
   <div class="msgs" id="msgs"></div>
   <div class="chips" id="chips"></div>
   <form class="composer" id="composer" autocomplete="off">
-    <input id="input" type="text" placeholder="Type your message…" aria-label="Message" maxlength="1200">
-    <button id="send" type="submit" aria-label="Send">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12h15M13 6l6 6-6 6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
+    <input id="input" type="text" placeholder="Type your message" aria-label="Message" maxlength="1200">
+    <button id="send" type="submit">Send</button>
   </form>
   <div class="fine">AI assistant. Estimates are samples, not quotes. Demo: please use test info.</div>
 </div>
@@ -320,7 +277,7 @@
     if (!started) {
       started = true;
       bot("Hi! I can get you a **sample private flood estimate** in about two minutes. What's the property address?");
-      setChips(["I'm not sure, just browsing", "Talk to an agent"]);
+      setChips(["I'm just browsing", "Talk to an agent"]);
     }
     if (prefill) send(prefill); else setTimeout(() => input.focus(), 50);
   }
@@ -351,7 +308,7 @@
     chips.innerHTML = "";
     list.forEach(t => { const b = document.createElement("button"); b.className = "chip"; b.textContent = t; b.onclick = () => send(t); chips.appendChild(b); });
     if (actions.includes("call")) {
-      const a = document.createElement("a"); a.className = "chip call"; a.href = "tel:" + CFG.PHONE_TEL; a.textContent = "📞 Call " + CFG.PHONE_DISPLAY; chips.appendChild(a);
+      const a = document.createElement("a"); a.className = "chip call"; a.href = "tel:" + CFG.PHONE_TEL; a.textContent = "Call " + CFG.PHONE_DISPLAY; chips.appendChild(a);
     }
   }
 
@@ -364,14 +321,14 @@
     const z = String(l.flood_zone || "").toUpperCase();
     const risk = z.startsWith("V") ? "Coastal high-hazard area (high risk)" : z.startsWith("A") ? "Special flood hazard area (high risk)" : z === "X" ? "Moderate-to-low risk area" : "Zone not determined";
     const d = document.createElement("div"); d.className = "card";
-    d.innerHTML = `<div class="zone"><span class="z">${esc(z || "?")}</span><div><b style="font-size:14px">FEMA flood zone</b><p>${esc(risk)}</p></div></div>`;
+    d.innerHTML = `<div class="zone"><span class="z">${esc(z || "?")}</span><div><b>FEMA flood zone</b><p>${esc(risk)}</p></div></div>`;
     msgs.appendChild(d); scroll();
   }
 
   function estimateCard(l) {
     const d = document.createElement("div"); d.className = "card est";
     const save = l.current_premium && l.current_premium > l.estimate_low ? `<div class="save">Up to ${money(l.current_premium - l.estimate_low)} less than your current ${money(l.current_premium)}/yr</div>` : "";
-    d.innerHTML = `<span class="tag">Sample estimate</span><div class="range">${money(l.estimate_low)} – ${money(l.estimate_high)} <small>/ year</small></div>${save}<div class="disc">Illustrative only, based on what you shared. A licensed agent confirms exact pricing from our carriers.</div>`;
+    d.innerHTML = `<div class="tag">Sample estimate</div><div class="range">${money(l.estimate_low)} – ${money(l.estimate_high)} <small>/ year</small></div>${save}<div class="disc">Illustrative only, based on what you shared. A licensed agent confirms exact pricing from our carriers.</div>`;
     msgs.appendChild(d); scroll();
   }
 
@@ -421,7 +378,7 @@
       if (l.flood_zone && !shownZone && l.flood_zone !== "unknown") { shownZone = true; zoneCard(l); }
       if (l.estimate_low && !shownEstimate) { shownEstimate = true; estimateCard(l); }
       if (j.reply) bot(j.reply);
-      if (l.status === "agent_requested" && lastLead.status !== "agent_requested") sys("✓ A licensed agent has been notified");
+      if (l.status === "agent_requested" && lastLead.status !== "agent_requested") sys("A licensed agent has been notified.");
       if (j.form === "contact") contactForm();
       setChips(j.quick_replies || [], j.actions || []);
       lastLead = l; progress(l);
