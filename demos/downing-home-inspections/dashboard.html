@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Lead inbox | Downing Home Inspections (concept)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/config.js"></script>
+<script src="assets/gate.js"></script>
+<style>
+.dash{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}
+.tile{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}
+.tile b{display:block;font-family:var(--head);font-size:1.8rem;color:var(--navy-2)}
+.tile span{color:var(--muted);font-size:.9rem}
+@media(max-width:760px){.tiles{grid-template-columns:1fr 1fr}}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filters button{font:inherit;font-weight:600;border:1px solid var(--line);background:#fff;border-radius:var(--radius);padding:7px 12px;cursor:pointer}
+.filters button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.split{display:grid;grid-template-columns:1fr 1.1fr;gap:18px;align-items:start}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.list{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:4px 12px}
+.item:hover,.item.sel{background:#F7F2EA}
+.item b{font-family:var(--head)}
+.item small{color:var(--muted)}
+.badge{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px;background:#EEE9DF;color:var(--navy-2);justify-self:end}
+.badge.hot{background:#FBE3D2;color:var(--accent-2)}
+.detail{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;position:sticky;top:16px}
+.detail dl{display:grid;grid-template-columns:140px 1fr;gap:6px 12px;margin:0}
+.detail dt{color:var(--muted);font-size:.9rem}
+.detail dd{margin:0}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+#keyform{max-width:360px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px}
+</style>
+</head>
+<body class="locked">
+<div class="demo-banner">Concept demo by Zero1 Ventures &mdash; lead inbox preview. Not live.</div>
+<div class="dash">
+  <form id="keyform"><h2>Lead inbox</h2><p class="fine">Enter the inbox key.</p>
+    <label class="field"><span>Inbox key</span><input type="password" id="key" autocomplete="off"></label>
+    <p class="err"></p><button class="btn btn-primary">Open inbox</button></form>
+
+  <div id="app" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <h1 style="margin:0;font-size:1.8rem">Lead inbox</h1>
+      <button class="btn btn-ghost btn-sm" id="refresh">Refresh</button>
+    </div>
+    <div class="tiles">
+      <div class="tile"><b id="t-new">0</b><span>New, not contacted</span></div>
+      <div class="tile"><b id="t-book">0</b><span>Booking requests</span></div>
+      <div class="tile"><b id="t-week">0</b><span>Leads, last 7 days</span></div>
+      <div class="tile"><b id="t-value">$0</b><span>Open estimate value</span></div>
+    </div>
+    <div class="filters" id="filters">
+      <button data-f="all" class="on">All</button><button data-f="hot">Hot</button><button data-f="booking">Booking requests</button>
+      <button data-f="quote">Quote only</button><button data-f="agent">From agents</button><button data-f="insurance">Insurance</button>
+    </div>
+    <div class="split"><div class="list" id="list"></div><div class="detail" id="detail"><p class="empty">Select a lead.</p></div></div>
+  </div>
+</div>
+<script>
+(function(){
+  const URL_ = window.DHI.functionsUrl + "/dhi-leads";
+  const NAMES = {general:"Home inspection",warranty11:"11-month warranty",wind:"Wind mitigation",fourpoint:"4-point",wdo:"WDO",pool:"Pool & spa",sewer:"Sewer scope",hud:"Manufactured (HUD)"};
+  let key = ""; try { key = sessionStorage.getItem("dhi_key") || ""; } catch(e){}
+  let leads = [], filter = "all", selId = null;
+  const $ = (q) => document.querySelector(q);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const money = (n) => "$" + (n||0).toLocaleString();
+
+  // Hot = booking request with a preferred date within 7 days, or an agent, or still new after a booking request.
+  function score(l){
+    let s = 0;
+    if (l.lead_type === "booking") s += 3;
+    if (l.role === "agent") s += 2;
+    if (l.preferred_date) { const d = (new Date(l.preferred_date) - new Date())/864e5; if (d <= 7) s += 3; }
+    if ((l.estimate_total||0) >= 400) s += 1;
+    if (l.status !== "new") s -= 2;
+    return s;
+  }
+  const isHot = (l) => score(l) >= 5;
+
+  async function load(){
+    const r = await fetch(URL_, { headers: { "x-demo-key": key } });
+    if (r.status === 401) throw new Error("bad key");
+    leads = (await r.json()).leads || [];
+    render();
+  }
+  function render(){
+    const now = Date.now();
+    $("#t-new").textContent = leads.filter(l => l.status === "new").length;
+    $("#t-book").textContent = leads.filter(l => l.lead_type === "booking").length;
+    $("#t-week").textContent = leads.filter(l => now - new Date(l.created_at) < 7*864e5).length;
+    $("#t-value").textContent = money(leads.filter(l => !["completed","lost"].includes(l.status)).reduce((a,l)=>a+(l.estimate_total||0),0));
+    const f = leads.filter(l => filter === "all" || (filter === "hot" && isHot(l)) || l.lead_type === filter ||
+      (filter === "agent" && l.role === "agent") || (filter === "insurance" && l.reason === "insurance"))
+      .sort((a,b) => score(b) - score(a) || new Date(b.created_at) - new Date(a.created_at));
+    $("#list").innerHTML = f.length ? f.map(l => `<div class="item${l.id===selId?" sel":""}" data-id="${l.id}">
+      <b>${esc(l.name)}</b><span class="badge${isHot(l)?" hot":""}">${isHot(l)?"hot":esc(l.status)}</span>
+      <small>${esc((l.services||[]).map(s=>NAMES[s]||s).join(", "))}</small><small>${money(l.estimate_total)}</small>
+      <small>${esc(l.address||"")}</small><small>${new Date(l.created_at).toLocaleDateString()}</small></div>`).join("")
+      : '<p class="empty">No leads here yet.</p>';
+    if (selId) detail(leads.find(l => l.id === selId));
+  }
+  function detail(l){
+    if (!l) return;
+    const lines = (l.estimate_lines||[]).map(x => `${esc(x.label)}: ${money(x.price)}`).join("<br>");
+    $("#detail").innerHTML = `<h2 style="font-size:1.4rem">${esc(l.name)}</h2>
+      <p>${l.phone?`<a class="btn btn-primary btn-sm" href="tel:${esc(l.phone)}">Call ${esc(l.phone)}</a> `:""}${l.phone?`<a class="btn btn-ghost btn-sm" href="sms:${esc(l.phone)}">Text</a> `:""}${l.email?`<a class="btn btn-ghost btn-sm" href="mailto:${esc(l.email)}">Email</a>`:""}</p>
+      <label class="field" style="max-width:220px"><span>Status</span><select id="st">${["new","contacted","scheduled","completed","lost"].map(s=>`<option${s===l.status?" selected":""}>${s}</option>`).join("")}</select></label>
+      <dl>
+        <dt>Request</dt><dd>${l.lead_type === "booking" ? "Booking request" : "Quote only"}</dd>
+        <dt>Preferred</dt><dd>${esc(l.preferred_date||"—")} ${esc(l.time_window||"")}</dd>
+        <dt>Role</dt><dd>${esc(l.role||"—")}${l.agent_name?` · agent: ${esc(l.agent_name)}`:""}</dd>
+        <dt>Address</dt><dd>${esc(l.address||"—")}</dd>
+        <dt>Property</dt><dd>${esc(l.sqft||"?")} sq ft · built ${esc(l.year_built||"?")} · ${esc(l.home_type||"")}</dd>
+        <dt>Estimate</dt><dd>${lines}<br><b>${money(l.estimate_total)}</b></dd>
+        <dt>Notes</dt><dd>${esc(l.notes||"—")}</dd>
+        <dt>Received</dt><dd>${new Date(l.created_at).toLocaleString()}</dd>
+        <dt>Source</dt><dd>${esc(l.source_page||"")} ${l.referrer?"· from "+esc(l.referrer):""}</dd>
+        <dt>Consent</dt><dd class="fine">${new Date(l.consent_at).toLocaleString()} · IP ${esc(l.consent_ip||"?")}<br>${esc(l.consent_text)}</dd>
+      </dl>`;
+    $("#st").addEventListener("change", async (e) => {
+      await fetch(URL_, { method:"PATCH", headers:{ "x-demo-key":key, "content-type":"application/json" }, body: JSON.stringify({ id:l.id, status:e.target.value }) });
+      l.status = e.target.value; render();
+    });
+  }
+  $("#list").addEventListener("click", e => { const it = e.target.closest(".item"); if (!it) return; selId = +it.dataset.id; render(); });
+  $("#filters").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; filter = b.dataset.f;
+    document.querySelectorAll("#filters button").forEach(x => x.classList.toggle("on", x === b)); render(); });
+  $("#refresh").addEventListener("click", load);
+  async function open(){
+    try { await load(); try { sessionStorage.setItem("dhi_key", key); } catch(e){} $("#keyform").hidden = true; $("#app").hidden = false; }
+    catch(e){ $("#keyform .err").textContent = e.message === "bad key" ? "That key didn't work." : "Couldn't reach the inbox."; }
+  }
+  $("#keyform").addEventListener("submit", e => { e.preventDefault(); key = $("#key").value.trim(); open(); });
+  if (key) open();
+})();
+</script>
+</body>
+</html>
