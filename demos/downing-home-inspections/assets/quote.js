@@ -174,12 +174,40 @@
     return n.length >= 13 && sum % 10 === 0;
   }
 
-  $("#contact-form").addEventListener("submit", async (ev) => {
+  // ---------- phone + date rules ----------
+  const cform = $("#contact-form");
+  const digits = (v) => v.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+  const fmtPhone = (d) => d.length < 4 ? d : d.length < 7 ? `(${d.slice(0, 3)}) ${d.slice(3)}` : `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6, 10)}`;
+  // US numbers: 10 digits, area code and exchange can't start with 0 or 1
+  const validPhone = (d) => /^[2-9]\d{2}[2-9]\d{6}$/.test(d);
+  cform.phone.setAttribute("inputmode", "tel");
+  cform.phone.setAttribute("maxlength", "14");
+  cform.phone.setAttribute("placeholder", "(407) 555-0123");
+  cform.phone.addEventListener("input", (e) => {
+    let d = e.target.value.replace(/\D/g, "");
+    if (d.length === 11 && d[0] === "1") d = d.slice(1);
+    e.target.value = fmtPhone(d.slice(0, 10));
+  });
+  const iso = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+  const today = iso(new Date());
+  const maxDay = iso(new Date(Date.now() + 180 * 864e5));
+  cform.pdate.min = today;
+  cform.pdate.max = maxDay;
+
+  cform.addEventListener("submit", async (ev) => {
     ev.preventDefault();
     const f = ev.target, err = $(".err", f), btn = $("#submit-btn");
     err.textContent = "";
-    const name = f.name.value.trim(), phone = f.phone.value.trim(), email = f.email.value.trim();
-    if (!name || (!phone && !email)) { err.textContent = "Add your name and a phone number or email."; return; }
+    const name = f.name.value.trim(), email = f.email.value.trim();
+    const pd = digits(f.phone.value);
+    if (!name || (!pd && !email)) { err.textContent = "Add your name and a phone number or email."; return; }
+    if (pd && !validPhone(pd)) { err.textContent = "Enter a full 10-digit phone number, like (407) 555-0123."; f.phone.focus(); return; }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = "Check the email address."; f.email.focus(); return; }
+    const phone = pd ? fmtPhone(pd) : "";
+    if (state.mode === "booking" && f.pdate.value) {
+      if (f.pdate.value < today) { err.textContent = "Pick today or a future date."; f.pdate.focus(); return; }
+      if (f.pdate.value > maxDay) { err.textContent = "Pick a date within the next 6 months, or call Neil for later dates."; f.pdate.focus(); return; }
+    }
     if (!f.consent.checked) { err.textContent = "Please check the consent box so Neil can contact you."; return; }
     const p = prop();
     const body = {
