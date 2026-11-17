@@ -41,8 +41,8 @@
 <body class="locked">
 <div class="demo-banner">Concept demo by Zero1 Ventures &mdash; lead inbox preview. Not live.</div>
 <div class="dash">
-  <form id="keyform"><h2>Lead inbox</h2><p class="fine">Enter the inbox key.</p>
-    <label class="field"><span>Inbox key</span><input type="password" id="key" autocomplete="off"></label>
+  <form id="keyform"><h2>Lead inbox</h2><p class="fine">Enter the admin password.</p>
+    <label class="field"><span>Password</span><input type="password" id="key" autocomplete="off"></label>
     <p class="err"></p><button class="btn btn-primary">Open inbox</button></form>
 
   <div id="app" hidden>
@@ -136,7 +136,7 @@
   $("#refresh").addEventListener("click", load);
   async function open(){
     try { await load(); try { sessionStorage.setItem("dhi_key", key); } catch(e){} $("#keyform").hidden = true; $("#app").hidden = false; }
-    catch(e){ $("#keyform .err").textContent = e.message === "bad key" ? "That key didn't work." : "Couldn't reach the inbox."; }
+    catch(e){ $("#keyform .err").textContent = e.message === "bad key" ? "That password didn't work." : "Couldn't reach the inbox."; }
   }
   $("#keyform").addEventListener("submit", e => { e.preventDefault(); key = $("#key").value.trim(); open(); });
   if (key) open();
