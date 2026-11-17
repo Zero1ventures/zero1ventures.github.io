@@ -1,7 +1,7 @@
 /* Downing Home Inspections — concept site (Zero1 Ventures) */
 :root{
   --navy:#12324F; --navy-2:#0C2238; --ink:#14202B; --muted:#55626E;
-  --accent:#C9692A; --accent-2:#A9541C; --bg:#F7F5F1; --card:#FFFFFF;
+  --accent:#0077B6; --accent-2:#005F92; --brand:#00AEEF; --bg:#F7F5F1; --card:#FFFFFF;
   --line:#E2DDD3; --ok:#2F7D4F; --warn:#B4541A;
   --radius:6px; --max:1120px;
   --head:"Archivo","Helvetica Neue",Arial,sans-serif;
@@ -34,6 +34,7 @@ p{margin:0 0 1em}
 .site-head .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy-2)}
 .brand svg{width:38px;height:38px;flex:none}
+.brand img{height:46px;width:auto;flex:none}
 .brand b{font-family:var(--head);font-size:1.05rem;line-height:1.1;display:block}
 .brand small{display:block;font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .nav{display:flex;align-items:center;gap:22px}
@@ -166,7 +167,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .opt input{width:20px;height:20px;margin:3px 0 0;flex:none;accent-color:var(--accent)}
 .opt b{display:block;font-family:var(--head)}
 .opt small{color:var(--muted);display:block;line-height:1.35}
-.opt:has(input:checked){border-color:var(--accent);background:#FFF8F2}
+.opt:has(input:checked){border-color:var(--accent);background:#EEF8FD}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:620px){.row2{grid-template-columns:1fr}}
 .nav-row{display:flex;justify-content:space-between;gap:12px;margin-top:10px}
@@ -216,3 +217,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .opts.four{grid-template-columns:repeat(4,1fr)}
 @media (max-width:620px){.opts.four{grid-template-columns:1fr 1fr}}
 .trust .tbd{color:var(--ink)}
+
+.hero h1 span{color:var(--accent)}
+.trust{border-top:4px solid var(--brand)}
+.nav a.btn-primary{color:#fff}
