@@ -7,6 +7,10 @@
   const norm = (s) => String(s || "").toLowerCase().replace(/^(city|town) of /, "").replace(/[^a-z0-9 ]/g, "").replace(/\bsaint\b/g, "st").replace(/\s+/g, " ").trim();
   const countyName = Object.fromEntries(D.counties.map((c) => [c.id, c.name]));
   let county = "";
+  const reportHref = (e) => {
+    const body = `Hi Neil,\n\nA permit search link for ${e.name} isn't working.\n\nLinks on the card:\n${e.links.map((l) => `- ${l.label}: ${l.url}`).join("\n")}\n\nWhat happened (optional):\n`;
+    return `mailto:${D.email}?subject=${encodeURIComponent(`Broken permit link: ${e.name}`)}&body=${encodeURIComponent(body)}`;
+  };
 
   function card(e, extra) {
     const links = e.links.map((l, i) =>
@@ -19,7 +23,7 @@
       <div class="pc-links">${links}</div>
       ${notes ? `<ul class="pc-notes">${notes}</ul>` : ""}
       ${phone}
-      <p class="pc-ver">Link checked ${esc(D.verified)}</p>
+      <p class="pc-ver"><a href="${reportHref(e)}">Report a broken link</a></p>
     </article>`;
   }
 
