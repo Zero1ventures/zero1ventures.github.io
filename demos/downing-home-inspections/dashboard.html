@@ -13,7 +13,8 @@
 <script src="assets/gate.js"></script>
 <style>
 .dash{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
-.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+.tile.closed b{color:#1E7A46}
 .tile{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}
 .tile b{display:block;font-family:var(--head);font-size:1.8rem;color:var(--navy-2)}
 .tile span{color:var(--muted);font-size:.9rem}
@@ -29,7 +30,18 @@
 .item b{font-family:var(--head)}
 .item small{color:var(--muted)}
 .badge{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px;background:#EEE9DF;color:var(--navy-2);justify-self:end}
-.badge.hot{background:#D6EEFB;color:var(--accent-2)}
+.badge.hot{background:#FDE7D6;color:#A3480F}
+.badges{display:flex;gap:6px;justify-self:end}
+.st-new{background:#D6EEFB;color:var(--accent-2)}
+.st-contacted{background:#FFF1C9;color:#7A5A00}
+.st-scheduled{background:#E6E3F8;color:#4B3F99}
+.st-completed{background:#D7F2E1;color:#1E7A46}
+.st-lost{background:#ECECEC;color:#666}
+.item.is-completed{border-left:4px solid #2E9E5B;background:#F6FBF8}
+.item.is-completed b::before{content:"\2713\00a0";color:#2E9E5B}
+.item.is-lost{opacity:.6}
+.donebar{background:#D7F2E1;color:#1E7A46;font-weight:700;border-radius:8px;padding:10px 14px;margin:0 0 14px}
+.lostbar{background:#ECECEC;color:#555;font-weight:700;border-radius:8px;padding:10px 14px;margin:0 0 14px}
 .detail{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;position:sticky;top:16px}
 .detail dl{display:grid;grid-template-columns:140px 1fr;gap:6px 12px;margin:0}
 .detail dt{color:var(--muted);font-size:.9rem}
@@ -52,13 +64,15 @@
     </div>
     <div class="tiles">
       <div class="tile"><b id="t-new">0</b><span>New, not contacted</span></div>
-      <div class="tile"><b id="t-book">0</b><span>Booking requests</span></div>
-      <div class="tile"><b id="t-week">0</b><span>Leads, last 7 days</span></div>
+      <div class="tile"><b id="t-book">0</b><span>Open booking requests</span></div>
       <div class="tile"><b id="t-value">$0</b><span>Open estimate value</span></div>
+      <div class="tile"><b id="t-week">0</b><span>Leads, last 7 days</span></div>
+      <div class="tile closed"><b id="t-booked">0</b><span>Completed bookings</span></div>
+      <div class="tile closed"><b id="t-closed">$0</b><span>Closed estimate value</span></div>
     </div>
     <div class="filters" id="filters">
       <button data-f="all" class="on">All</button><button data-f="hot">Hot</button><button data-f="booking">Booking requests</button>
-      <button data-f="quote">Quote only</button><button data-f="agent">From agents</button><button data-f="insurance">Insurance</button>
+      <button data-f="quote">Quote only</button><button data-f="agent">From agents</button><button data-f="insurance">Insurance</button><button data-f="completed">Completed</button>
     </div>
     <div class="split"><div class="list" id="list"></div><div class="detail" id="detail"><p class="empty">Select a lead.</p></div></div>
   </div>
@@ -81,6 +95,7 @@
     if (l.preferred_date) { const d = (new Date(l.preferred_date) - new Date())/864e5; if (d <= 7) s += 3; }
     if ((l.estimate_total||0) >= 400) s += 1;
     if (l.status !== "new") s -= 2;
+    if (["completed","lost"].includes(l.status)) s -= 20; // done leads sink to the bottom, never hot
     return s;
   }
   const isHot = (l) => score(l) >= 5;
@@ -94,14 +109,19 @@
   function render(){
     const now = Date.now();
     $("#t-new").textContent = leads.filter(l => l.status === "new").length;
-    $("#t-book").textContent = leads.filter(l => l.lead_type === "booking").length;
+    const open = (l) => !["completed","lost"].includes(l.status);
+    const sum = (arr) => money(arr.reduce((a,l)=>a+(l.estimate_total||0),0));
+    $("#t-book").textContent = leads.filter(l => l.lead_type === "booking" && open(l)).length;
     $("#t-week").textContent = leads.filter(l => now - new Date(l.created_at) < 7*864e5).length;
-    $("#t-value").textContent = money(leads.filter(l => !["completed","lost"].includes(l.status)).reduce((a,l)=>a+(l.estimate_total||0),0));
+    $("#t-value").textContent = sum(leads.filter(open));
+    $("#t-booked").textContent = leads.filter(l => l.lead_type === "booking" && l.status === "completed").length;
+    $("#t-closed").textContent = sum(leads.filter(l => l.status === "completed"));
     const f = leads.filter(l => filter === "all" || (filter === "hot" && isHot(l)) || l.lead_type === filter ||
-      (filter === "agent" && l.role === "agent") || (filter === "insurance" && l.reason === "insurance"))
+      (filter === "agent" && l.role === "agent") || (filter === "insurance" && l.reason === "insurance") ||
+      (filter === "completed" && l.status === "completed"))
       .sort((a,b) => score(b) - score(a) || new Date(b.created_at) - new Date(a.created_at));
-    $("#list").innerHTML = f.length ? f.map(l => `<div class="item${l.id===selId?" sel":""}" data-id="${l.id}">
-      <b>${esc(l.name)}</b><span class="badge${isHot(l)?" hot":""}">${isHot(l)?"hot":esc(l.status)}</span>
+    $("#list").innerHTML = f.length ? f.map(l => `<div class="item is-${esc(l.status)}${l.id===selId?" sel":""}" data-id="${l.id}">
+      <b>${esc(l.name)}</b><span class="badges">${isHot(l)?'<span class="badge hot">hot</span>':""}<span class="badge st-${esc(l.status)}">${esc(l.status)}</span></span>
       <small>${esc((l.services||[]).map(s=>NAMES[s]||s).join(", "))}</small><small>${money(l.estimate_total)}</small>
       <small>${esc(l.address||"")}</small><small>${new Date(l.created_at).toLocaleDateString()}</small></div>`).join("")
       : '<p class="empty">No leads here yet.</p>';
@@ -110,7 +130,9 @@
   function detail(l){
     if (!l) return;
     const lines = (l.estimate_lines||[]).map(x => `${esc(x.label)}: ${money(x.price)}`).join("<br>");
-    $("#detail").innerHTML = `<h2 style="font-size:1.4rem">${esc(l.name)}</h2>
+    const bar = l.status === "completed" ? `<p class="donebar">\u2713 Completed${l.updated_at?" · "+new Date(l.updated_at).toLocaleDateString():""} · ${money(l.estimate_total)}</p>`
+      : l.status === "lost" ? `<p class="lostbar">Marked lost</p>` : "";
+    $("#detail").innerHTML = `${bar}<h2 style="font-size:1.4rem">${esc(l.name)}</h2>
       <p>${l.phone?`<a class="btn btn-primary btn-sm" href="tel:${esc(l.phone)}">Call ${esc(l.phone)}</a> `:""}${l.phone?`<a class="btn btn-ghost btn-sm" href="sms:${esc(l.phone)}">Text</a> `:""}${l.email?`<a class="btn btn-ghost btn-sm" href="mailto:${esc(l.email)}">Email</a>`:""}</p>
       <label class="field" style="max-width:220px"><span>Status</span><select id="st">${["new","contacted","scheduled","completed","lost"].map(s=>`<option${s===l.status?" selected":""}>${s}</option>`).join("")}</select></label>
       <dl>
@@ -127,7 +149,7 @@
       </dl>`;
     $("#st").addEventListener("change", async (e) => {
       await fetch(URL_, { method:"PATCH", headers:{ "x-demo-key":key, "content-type":"application/json" }, body: JSON.stringify({ id:l.id, status:e.target.value }) });
-      l.status = e.target.value; render();
+      l.status = e.target.value; l.updated_at = new Date().toISOString(); render();
     });
   }
   $("#list").addEventListener("click", e => { const it = e.target.closest(".item"); if (!it) return; selId = +it.dataset.id; render(); });
