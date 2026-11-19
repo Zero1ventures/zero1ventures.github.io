@@ -56,6 +56,7 @@
   var side = CFG.position;
   var css = [
     ":host{all:initial}",
+    "[hidden]{display:none!important}",
     "*{box-sizing:border-box;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}",
     ".launch{position:fixed;bottom:20px;" + side + ":20px;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--accent);color:var(--on);box-shadow:0 6px 20px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;z-index:2147483000}",
     ".launch:focus-visible,button:focus-visible,textarea:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}",
