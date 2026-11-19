@@ -211,7 +211,7 @@
       }
       function handle(event, d) {
         if (event === "meta" && d.conversation_id) { conversationId = d.conversation_id; store.set("conv", conversationId); }
-        else if (event === "delta") { answer += d.t || ""; if (!pending) { pending = true; requestAnimationFrame(paint); } }
+        else if (event === "delta") { answer += d.t || ""; if (!pending) { pending = true; setTimeout(paint, 30); } }
         else if (event === "done") { finished = true; tail = sources(d.citations); paint(); log.scrollTop = log.scrollHeight; }
         else if (event === "error") {
           finished = true; typing.remove();
