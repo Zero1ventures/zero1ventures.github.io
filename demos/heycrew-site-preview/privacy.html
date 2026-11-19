@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — HeyCrew</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: #0ABFBC;
+      --deep-teal: #04514F;
+      --dark: #022322;
+      --yellow: #FFD93D;
+      --bg: #f7fafa;
+      --text: #1a2e2e;
+      --muted: #4a6464;
+      --border: #d0e8e8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    header {
+      background: var(--dark);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--teal);
+    }
+
+    .header-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-title {
+      color: white;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    .header-title span { color: var(--teal); }
+
+    .hero {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--deep-teal) 100%);
+      padding: 64px 32px 56px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: white;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .hero h1 span { color: var(--teal); }
+
+    .hero p {
+      color: rgba(255,255,255,0.65);
+      font-size: 15px;
+      font-weight: 300;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .effective-badge {
+      display: inline-block;
+      margin-top: 20px;
+      background: rgba(10,191,188,0.15);
+      border: 1px solid rgba(10,191,188,0.35);
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 56px 32px 80px;
+    }
+
+    .toc {
+      background: white;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 12px 12px 0;
+      padding: 24px 28px;
+      margin-bottom: 52px;
+    }
+
+    .toc-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .toc ol {
+      list-style: none;
+      counter-reset: toc;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 24px;
+    }
+
+    @media (max-width: 540px) { .toc ol { grid-template-columns: 1fr; } }
+
+    .toc li {
+      counter-increment: toc;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .toc li::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--teal);
+      flex-shrink: 0;
+    }
+
+    .toc a {
+      color: var(--deep-teal);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 400;
+      transition: color 0.15s;
+    }
+
+    .toc a:hover { color: var(--teal); }
+
+    section {
+      margin-bottom: 52px;
+      scroll-margin-top: 80px;
+    }
+
+    .section-number {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--dark);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    h3 {
+      font-size: 1rem;
+      color: var(--dark);
+      margin: 22px 0 10px;
+      font-weight: 500;
+    }
+
+    p {
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-weight: 300;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    li {
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 6px;
+    }
+
+    strong { color: var(--text); font-weight: 500; }
+
+    .info-box {
+      background: rgba(10,191,188,0.06);
+      border: 1px solid rgba(10,191,188,0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .info-box p { margin-bottom: 0; font-size: 14px; }
+
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 13.5px;
+    }
+
+    table.data th, table.data td {
+      border: 1px solid var(--border);
+      padding: 9px 12px;
+      text-align: left;
+      vertical-align: top;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    table.data th {
+      background: rgba(10,191,188,0.08);
+      color: var(--dark);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    table.data td strong { color: var(--text); font-weight: 500; }
+
+    .table-scroll { overflow-x: auto; }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 52px;
+    }
+
+    .contact-card {
+      background: var(--dark);
+      border-radius: 16px;
+      padding: 36px;
+      text-align: center;
+    }
+
+    .contact-card h2 { color: white; }
+    .contact-card p { color: rgba(255,255,255,0.55); }
+
+    .contact-link {
+      display: inline-block;
+      margin-top: 16px;
+      background: var(--teal);
+      color: var(--dark);
+      font-weight: 500;
+      font-size: 14px;
+      padding: 12px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .contact-link:hover { opacity: 0.85; }
+
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 24px 32px;
+      text-align: center;
+    }
+
+    footer p {
+      color: rgba(255,255,255,0.35);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    footer a { color: var(--teal); text-decoration: none; }
+
+    a { color: var(--teal); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <img src="/images/logo-96.png" alt="HeyCrew logo" style="width:36px;height:36px;border-radius:10px;object-fit:cover;">
+    <span class="header-title"><span>HeyCrew</span> — Privacy Policy</span>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Your Privacy <span>Matters</span></h1>
+  <p>We built HeyCrew to make planning easier, not to harvest your data.</p>
+  <div class="effective-badge">Effective November 19, 2026</div>
+</div>
+
+<main>
+
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-label">Contents</div>
+    <ol>
+      <li><a href="#info-we-collect">Information We Collect</a></li>
+      <li><a href="#data-summary">Summary of Data We Collect</a></li>
+      <li><a href="#how-we-use">How We Use Information</a></li>
+      <li><a href="#analytics-tracking">Analytics &amp; No Cross-App Tracking</a></li>
+      <li><a href="#sharing">Sharing &amp; Disclosure</a></li>
+      <li><a href="#storage">Data Storage &amp; Security</a></li>
+      <li><a href="#retention">Data Retention</a></li>
+      <li><a href="#deletion">Account Deletion</a></li>
+      <li><a href="#children">Age Eligibility &amp; Children's Privacy</a></li>
+      <li><a href="#your-rights">Your Rights</a></li>
+      <li><a href="#gdpr-ccpa">GDPR &amp; CCPA</a></li>
+      <li><a href="#third-parties">Third-Party Services</a></li>
+      <li><a href="#website-assistant">Website Help Assistant</a></li>
+      <li><a href="#changes">Changes to This Policy</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ol>
+  </nav>
+
+  <section id="intro">
+    <p>This Privacy Policy describes how Zero1 Ventures, LLC ("we," "us," or "our") collects, uses, and handles information when you use HeyCrew, a product of Zero1 Ventures, LLC ("the App"). It explains our data practices and how to contact us about your information. This policy does not replace any separate consent required by applicable law or app-store rules.</p>
+    <p>You can use HeyCrew's core features without choosing a password or signing in with Apple or Google. The App automatically creates a pseudonymous HeyCrew account and stores credentials securely on your device. Your display name, Crews, events and contributions are associated with that account. Optional Apple or Google linking can help you sign in to or recover your HeyCrew identity.</p>
+    <p>This policy also covers the optional AI help assistant on heycrewapp.com. The assistant is a website feature only. It is not part of the App and has no access to your HeyCrew account or App data. See Section 13.</p>
+  </section>
+
+  <hr>
+
+  <section id="info-we-collect">
+    <div class="section-number">01</div>
+    <h2>Information We Collect</h2>
+
+    <h3>Information you provide directly</h3>
+    <ul>
+      <li>A display name you choose when setting up the App. You can set this to anything; it does not have to be your legal name.</li>
+      <li><strong>Event content you create:</strong> event names, dates, descriptions, availability, ideas, poll responses and votes, checklist items, and chat messages.</li>
+      <li><strong>Crew information:</strong> Crew names, descriptions, emojis, membership and invitations are associated with HeyCrew identities and can continue independently of any one event.</li>
+      <li>An optional email address, if you choose to sign up for product updates through our website.</li>
+      <li>If you choose to sign in with Apple or Google: the name and email address released to us by that provider. With Sign in with Apple, you may also choose Apple's private email relay, in which case we receive only the relay address.</li>
+      <li>The contents of any support request you send us.</li>
+    </ul>
+
+    <h3>Information collected automatically</h3>
+    <ul>
+      <li>A pseudonymous HeyCrew account identifier (UUID), also used by the App as its device identity. It is associated with your credentials, display name, Crews, events and contributions, and is cached on your device. It identifies your HeyCrew account rather than being a hardware serial number.</li>
+      <li>Encrypted device credentials (a synthetic email and password generated by the App, not chosen by or shown to you) stored in your device's secure storage to keep you signed in without a traditional account.</li>
+      <li>A push notification token, when available, used to deliver event updates and Crew and event invitations.</li>
+      <li>In older app versions, product interaction and diagnostic data collected through Firebase Analytics, including app activity, features used, event identifiers and technical information associated with an app instance or device. Some identity-diagnostic events also include HeyCrew account identifiers. Firebase Analytics collection is disabled in app versions containing our 18+ age-check update. Section 4 explains older versions and information collected before that change.</li>
+    </ul>
+
+    <h3>Age-range information</h3>
+    <p>On supported devices, HeyCrew may request age-range information and sharing status from Apple or Google to decide whether to allow access under our 18+ rule. The age check does not ask you to enter a date of birth or upload identity documents. HeyCrew processes the returned age information on your device for this check. We do not save it in your HeyCrew account, send it to our backend or Analytics, log it, or use it for advertising, marketing or profiling. Apple and Google handle their own age and sharing processes under their policies. See Section 9 for how unavailable age information is handled.</p>
+
+    <h3>Reports, safety records and deletion follow-ups</h3>
+    <p>If content or a user is reported, we collect the report and may preserve a snapshot needed to review it. Depending on the report, this can include reported message text, an author's name and HeyCrew identifier, or a Crew's name, creator identifier and member count. Restricted moderation notes may also include linked sign-in identity identifiers used to investigate abuse or attempts to evade enforcement. These records can remain after the original content, Crew or account is deleted, as explained in Data Retention.</p>
+    <p>We also keep service-operation records and, where provider cleanup is not confirmed, restricted deletion follow-up records containing the former HeyCrew account identifier, provider, status, attempt count, timestamps and a short result or error description. These follow-up records do not contain Apple refresh tokens or account passwords.</p>
+
+    <h3>If you sign in with Apple</h3>
+    <p>When you link Sign in with Apple, our backend securely stores the Apple refresh token associated with your sign-in. We store the refresh token only (not your Apple password and not a long-lived access token), and it is held in a restricted, server-only table that is not accessible from the App. We retain it for one purpose: so that, if you delete your account, we can call Apple's token revocation endpoint on your behalf as Apple requires. See Account Deletion.</p>
+
+    <h3>Information about guests and event participants</h3>
+    <p>When an event creator invites participants, the App stores the display name assigned to or chosen by each participant, along with their event activity (availability, RSVPs, ideas, votes, and messages). Event creators are responsible for ensuring that any participants they invite are comfortable having this information stored and shared with other members of that event. We do not independently verify participant consent.</p>
+    <div class="info-box">
+      <p>💡 No password or social sign-in required for core features. You can choose a display name and create or join events without providing your legal name, personal email address or phone number. If you link Apple or Google sign-in, contact support, or sign up for email updates, we receive the information you or the provider share for that purpose.</p>
+    </div>
+  </section>
+
+  <section id="data-summary">
+    <div class="section-number">02</div>
+    <h2>Summary of Data We Collect</h2>
+    <p>The table below summarizes the categories of data associated with the App and is intended to be consistent with the privacy information shown on our App Store and Google Play listings. "Linked to you" means the data is associated with your device-based identity. We do not use any of this data to track you across other companies' apps or websites.</p>
+    <div class="table-scroll">
+    <table class="data">
+      <thead><tr><th>Data type</th><th>Linked to your identity?</th><th>Used to track you?</th><th>Primary purpose</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Name (display name; name from Apple/Google sign-in)</strong></td><td>Yes</td><td>No</td><td>App functionality</td></tr>
+        <tr><td><strong>Email address (sign-in or email-update signup)</strong></td><td>Yes</td><td>No</td><td>App functionality</td></tr>
+        <tr><td><strong>User ID (pseudonymous HeyCrew account identifier)</strong></td><td>Yes</td><td>No</td><td>App functionality, diagnostics, safety and deletion follow-up</td></tr>
+        <tr><td><strong>Device or app-instance identifiers (including notification identifiers and older-version analytics identifiers)</strong></td><td>Yes, to a device or app instance</td><td>No</td><td>App functionality; older-version and historical analytics</td></tr>
+        <tr><td><strong>In-app messages and comments (chat and discussion content)</strong></td><td>Yes</td><td>No</td><td>App functionality and moderation</td></tr>
+        <tr><td><strong>Other user content (Crew and event details, ideas, availability, reports and related snapshots)</strong></td><td>Yes</td><td>No</td><td>App functionality and moderation</td></tr>
+        <tr><td><strong>Customer support (requests and correspondence you send us)</strong></td><td>Yes, where associated with your account or contact details</td><td>No</td><td>Customer support</td></tr>
+        <tr><td><strong>Purchase history (subscription status via RevenueCat)</strong></td><td>Yes</td><td>No</td><td>App functionality</td></tr>
+        <tr><td><strong>Product interaction via Firebase Analytics (older app versions and previously collected records)</strong></td><td>Yes, through device/app-instance identifiers and any included account or event identifiers</td><td>No</td><td>Analytics in older app versions; collection disabled in the 18+ update</td></tr>
+        <tr><td><strong>Age-range information and sharing status from Apple or Google</strong></td><td>Processed on-device for the age check; not stored with a HeyCrew account</td><td>No</td><td>Check eligibility under the 18+ rule</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>HeyCrew's core features do not request precise device location, photos or media, health data, or payment card or financial account details. Optional on-device contact access is described below. Technical information, operational records and provider processing are described in this policy.</p>
+    <p><strong>Contacts.</strong> If you use the optional invite feature that reads your device contacts, that access happens only at your request and entirely on your device, to help you pick people to invite. Your contacts are used only to pre-fill a text message, email, or your device's share sheet. We do not upload, store, or receive your contacts on our servers.</p>
+  </section>
+
+  <section id="how-we-use">
+    <div class="section-number">03</div>
+    <h2>How We Use Information</h2>
+    <p>We use the information collected to:</p>
+    <ul>
+      <li>Operate and provide the App's features, including event creation, scheduling, and group coordination</li>
+      <li>Maintain your pseudonymous session and identity across your sessions and, on supported platforms, across reinstalls</li>
+      <li>Operate MyCrew, including maintaining Crew membership and delivering Crew and event invitations</li>
+      <li>Deliver push notifications about events, Crews, and invitations (with your permission)</li>
+      <li>Process in-app purchases through the Apple App Store or Google Play, via RevenueCat</li>
+      <li>Understand how the App is used through older-version or previously collected Analytics records, as described in Section 4</li>
+      <li>Use available platform age-range information only to apply our 18+ access rule</li>
+      <li>Respond to support requests if you contact us</li>
+      <li>Send product updates if you opted into our email list</li>
+      <li>Detect, investigate, and act on reports of objectionable content or abusive behavior, and otherwise enforce our <a href="./terms.html">Terms of Service</a></li>
+    </ul>
+    <p>We do not sell your personal data. We may use aggregated or de-identified data to operate and improve our services.</p>
+  </section>
+
+  <section id="analytics-tracking">
+    <div class="section-number">04</div>
+    <h2>Analytics &amp; No Cross-App Tracking</h2>
+    <p>Firebase Analytics collection is disabled in app versions containing our 18+ age-check update. This applies to everyone using those versions, including when age information is unavailable. The age result is not sent to Analytics.</p>
+    <p>Older app versions may continue to collect Firebase Analytics data until you update. In those versions, we use Analytics to understand feature use, diagnose problems and prepare aggregate reports. Events can include event identifiers, and some identity-diagnostic events include HeyCrew account identifiers. The SDK also associates activity with app-instance or device identifiers. These records are pseudonymous or account-linked, rather than necessarily anonymous.</p>
+    <p>Updating to a version with Analytics disabled does not itself delete information already held by the provider. Historical records remain subject to the retention and rights processes described in this policy.</p>
+    <p>Firebase Cloud Messaging remains in use for notifications. Disabling Analytics does not disable notification delivery or all Firebase processing. See Sections 1 and 6 for notification identifiers and service operation.</p>
+    <p>We do not use this information to target advertising based on activity in other companies' apps or websites. The App does not request App Tracking Transparency permission. Older versions do not include a dedicated Firebase Analytics opt-out setting; device notification settings control notifications, not Analytics.</p>
+    <p>Contact <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a> with questions or requests concerning your information. We may need to verify ownership and explain what records we can locate and what provider processes apply. If our practices change, we will update this policy and the relevant store disclosures and obtain any permission required before introducing the changed processing.</p>
+  </section>
+
+  <section id="sharing">
+    <div class="section-number">05</div>
+    <h2>Sharing &amp; Disclosure</h2>
+    <p>We do not sell, rent, or trade your information. We share limited data only in these circumstances:</p>
+    <ul>
+      <li><strong>With other event members:</strong> Your display name and your event contributions (availability, ideas, votes, messages, RSVPs) are visible to other members of events you join.</li>
+      <li><strong>With Crew members and invitees:</strong> Crew members can see the Crew name, description, emoji, member list, display names, avatars and, when available, join code. A person with a valid Crew code can see a limited preview, such as the Crew name and emoji, before joining. Invitation recipients can see information needed to identify and respond to an invitation.</li>
+      <li><strong>Service providers (subprocessors):</strong> We use trusted providers to operate the App, currently Supabase (database and backend), Firebase (push notification and installation services, plus older-version and historical Analytics), and RevenueCat (subscription management). For the website help assistant only, we also use Anthropic and Voyage AI, as described in Section 13. These providers process data on our behalf under their own privacy commitments and, where applicable, data processing agreements with us. We may add, remove, or change service providers over time and will post material changes to this list.</li>
+      <li><strong>Apple and Google:</strong> If you use Sign in with Apple or Sign in with Google, those providers share limited authentication data with us. In-app purchases are processed directly by Apple or Google; we do not receive your payment card information.</li>
+      <li><strong>Legal and safety:</strong> If required by law, subpoena, or court order, or where we believe in good faith it is necessary to protect the rights, property, or safety of our users, the public, or us.</li>
+      <li><strong>Business transfers:</strong> If Zero1 Ventures, LLC is involved in a merger, acquisition, or sale of assets, your information may be transferred as part of that transaction. We will notify you of any such change in ownership of your information.</li>
+    </ul>
+    <p>Our use of third-party services does not remove our responsibilities under applicable privacy law. Their privacy policies provide additional information about their practices; see Section 12.</p>
+  </section>
+
+  <section id="storage">
+    <div class="section-number">06</div>
+    <h2>Data Storage &amp; Security</h2>
+    <p>Event data is stored on Supabase-managed servers located in the United States. If you use the App outside the United States, your information may be transferred to and processed in the United States or other locations where our service providers operate. Contact us for information about the providers, processing locations and any transfer safeguards applicable to your information. Using the App does not replace any transfer safeguards required by applicable law.</p>
+    <p>Your App-generated credentials are stored using platform secure-storage facilities. Credentials can persist across iOS App reinstalls. On Android, the App also uses Google's Block Store service for credential backup and recovery when available. Recovery depends on the platform, your settings and the credentials still being available; it is not guaranteed.</p>
+    <p>We implement reasonable technical and organizational measures to protect your data. However, no method of transmission over the internet or method of electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
+    <p>Push notification tokens are stored in our database to deliver notifications, including event updates and Crew and event invitations. You can manage notification permissions in your device settings.</p>
+    <p>Firebase Cloud Messaging may create installation identifiers and notification tokens, and exchange information needed to operate its service, before an age-check result is available. An age restriction does not automatically delete an existing HeyCrew identity or notification registration. Previously enabled notifications may continue even if access to the App is restricted. You can turn off notifications in your device settings or request account deletion as described in Section 8.</p>
+  </section>
+
+  <section id="retention">
+    <div class="section-number">07</div>
+    <h2>Data Retention</h2>
+    <p>We retain information to provide the App, handle support and operate its safety and account-management processes. Account deletion removes the account and content listed in Section 8. Certain restricted operational records and provider-held copies are handled separately, as described below.</p>
+    <ul>
+      <li><strong>Event data:</strong> Events and their content remain until deleted through the App's controls or by automatic cleanup. Events with an expiry date are deleted about 30 days after they expire, unless the creator has an active subscription or one that lapsed less than 30 days earlier. Free-tier limits are described in the App.</li>
+      <li><strong>Account identity and credentials:</strong> These are kept to provide access to HeyCrew and removed through the account-deletion process described below.</li>
+      <li><strong>Inactive accounts:</strong> Some unused accounts that are not linked to Apple or Google sign-in qualify for automatic cleanup. An eligible account may be marked when its authentication record has not been updated for 60 days and deleted in nightly cleanup more than 30 days after marking if it remains eligible. Eligibility excludes accounts with retained content, event or Crew participation, blocking records, email registrations, or a subscription expiry in the future or within the preceding 45 days. A cleanup mark is cleared during a later cleanup if the account no longer qualifies.</li>
+      <li><strong>Crews:</strong> A Crew can continue independently of a particular event. Leaving a Crew removes your membership. Deleting a Crew removes it and its memberships for everyone. Deleting a creator's HeyCrew account also deletes the Crews that account created.</li>
+      <li><strong>Push notification tokens:</strong> Tokens can be associated with your account independently of an event and may remain after an event is deleted or the App is uninstalled. Associated token rows are removed when the account's device record is deleted. Notification senders also attempt to remove tokens rejected as invalid by the provider. There is no fixed inactivity-based deletion period for these rows.</li>
+      <li><strong>Invitations and send logs:</strong> Pending Crew and event invitations are marked expired in nightly cleanup once their expiry passes, which makes them unusable. Invitations that are no longer pending are deleted about 90 days after they close, and invitation send logs are deleted about 90 days after they are created. Until then, invitations you sent can remain with recipients after account deletion, with your sender identifier removed. Notifications already delivered to a device may still show your name.</li>
+      <li><strong>Moderation reports and snapshots:</strong> Restricted reports, operator notes and copies of reported content are used to investigate reports and handle abuse. Reports are kept while open. When a report is dismissed, copies of the reported content are removed in nightly cleanup. Dismissed report records may be removed earlier when the reported account, the author of retained reported content, or the creator of a reported Crew no longer exists. All resolved report records, including dismissed reports, are removed by nightly cleanup more than 180 days after their recorded resolution. Reports that lead to action retain the reported content and related operator notes until that cleanup. A deleted reporter's identifier is removed in the next nightly cleanup. These records are not removed by the standard account-deletion transaction itself. Contact support about a retained-record request; we will assess the records and any applicable retention or deletion obligations.</li>
+      <li><strong>Deletion follow-ups:</strong> We retain a restricted record when provider cleanup is unconfirmed. It contains the former account identifier, provider, status, attempts, timestamps and a short result description, not a password or Apple refresh token. RevenueCat follow-ups are removed after cleanup is confirmed. Apple revocation-failure records cannot themselves be used to retry revocation and are deleted by nightly cleanup about 30 days after they are created.</li>
+      <li><strong>Apple refresh tokens:</strong> We use the stored token to request Apple revocation before completing account deletion. The token is deleted with the authentication account even if revocation fails.</li>
+      <li><strong>Short-lived operational logs:</strong> Push-send logs and join-code attempt logs are removed by nightly cleanup after 3 days, and MyCrew action logs after 48 hours.</li>
+      <li>Analytics collected before deactivation or through older app versions: Our Google Analytics user-level and event-level retention setting is two months, with reset on new activity disabled. Eligible data is removed through Google's retention-processing cycle. Standard aggregated reports may be retained longer. Disabling collection or resetting Analytics on your device does not by itself erase historical provider records.</li>
+      <li><strong>Age-check results:</strong> HeyCrew does not retain the raw age result or access decision after the on-device check, or store an age profile with your account. Apple and Google manage records held by their own services under their policies.</li>
+      <li><strong>Support correspondence and deletion-request records:</strong> We retain closed support threads and necessary records of a request, verification method, reference, dates and outcome for twelve months after the final reply. If a thread reopens, the period runs from the new final reply. The same rule applies to copies and exports. We handle applicable earlier deletion requests and retain records longer only where a legal hold requires it. Do not send passwords, access tokens or recovery credentials.</li>
+      <li><strong>Product-update emails:</strong> You can unsubscribe using the link in an email or contact support about removal of your signup information. We handle these records separately from account deletion because a signup may not be linked to a HeyCrew account.</li>
+      <li><strong>Backups and service logs:</strong> Our current Supabase database backup window is seven days. Deleted live data can remain in earlier backups until those backups age out. This period does not describe all provider logs, support correspondence, exports or other copies, which are handled under their applicable processes.</li>
+    </ul>
+    <p>Use App Settings → Data &amp; Privacy → Request Data Deletion or contact <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a> to request account deletion. The next section explains what deletion removes and what may remain.</p>
+  </section>
+
+  <section id="deletion">
+    <div class="section-number">08</div>
+    <h2>Account Deletion</h2>
+    <p>You can request permanent account deletion from App Settings → Data &amp; Privacy → Request Data Deletion. The App asks you to confirm the action. When deletion completes, the primary HeyCrew account and the content listed below are deleted. Deletion cannot be undone. Provider cleanup and the retained records described in Data Retention are handled separately.</p>
+    <ul>
+      <li>Events you created are deleted for everyone, including their event content.</li>
+      <li>Crews you created are deleted for everyone, including their memberships and Crew invitation records. They do not remain as locked Crews after your account is deleted.</li>
+      <li>Events you joined remain available to other members. Your membership and associated contributions are removed, including your ideas, messages, comments, votes, availability, RSVPs and checklist items you created. Checklist items created by another person and assigned to you can remain, with the assignment removed. Preserved moderation copies are addressed in Data Retention.</li>
+      <li><strong>You are removed from Crews you joined.</strong> Other creators' Crews and other members' event content remain.</li>
+      <li>Alerts associated with you as the actor are removed, including those in other users' in-app inboxes. Notifications already displayed or delivered outside the App may still appear in device notification history.</li>
+      <li>Your HeyCrew account, associated device record, push-token records and stored App credentials are removed through the server and local deletion process. Optional platform credential backup and recovery are subject to the platform's behavior; contact us if you have difficulty completing deletion.</li>
+      <li><strong>Sign in with Apple:</strong> We attempt to revoke HeyCrew's Apple authorization before deleting the stored Apple refresh token. If revocation fails, HeyCrew account deletion still proceeds and we retain a restricted failure record. That record does not contain a retry credential. You can manually stop using Sign in with Apple for HeyCrew in your Apple Account settings. See the instructions below.</li>
+      <li><strong>RevenueCat:</strong> We request deletion of the subscriber profile. If cleanup is not confirmed, we retain a restricted follow-up record for further handling. Deleting your HeyCrew account does not cancel an App Store or Google Play subscription. Manage or cancel subscriptions in the store where you purchased them; store-held billing and transaction records are subject to that store's policies.</li>
+      <li><strong>Local Analytics reset:</strong> After confirmed deletion, the App requests a reset of local Firebase Analytics data and its app-instance identifier. Analytics collection remains disabled in versions containing the 18+ update. A reset does not by itself delete historical analytics records already held by the provider. See Data Retention.</li>
+    </ul>
+    <p>If a connection or service error prevents the App from confirming the outcome, some deletion may already have completed. Retry or contact <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a> for help confirming the status.</p>
+
+    <h3>Manually remove Sign in with Apple access</h3>
+    <p>On your iPhone, open Settings, tap your name, open Sign in with Apple (under Sign-In &amp; Security on some versions), select HeyCrew or its developer, and follow the option to delete or stop using the connection. Apple may change the labels. Apple's instructions for managing Sign in with Apple explain the current steps. This removes the Apple authorization; use HeyCrew's deletion process to delete the HeyCrew account itself.</p>
+
+    <h3>Requesting deletion from the web</h3>
+    <p>You can start a deletion request at <a href="https://heycrewapp.com/delete">heycrewapp.com/delete</a> or email <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a> with the subject "Delete my account." If an age restriction prevents access to Settings, the restricted screen provides support and deletion links and, when an existing session has been restored, a Copy Device ID button. The identifier helps us locate the account; it is not proof of ownership. Provide the details requested by the form or support team, such as your display name or an associated sign-in email. Do not send passwords, recovery credentials or access tokens.</p>
+    <p>We accept requests from people with or without linked Apple or Google sign-in. We will explain any verification needed and confirm the outcome of the request. A display name or account identifier alone is not proof of ownership. If we cannot verify ownership, we will explain the limitation rather than delete someone else's account. We will not require you to send passwords, recovery credentials or access tokens.</p>
+    <p>Records that may remain: restricted moderation reports and snapshots, unresolved provider-cleanup records, and applicable backup or operational records, as described in Data Retention. You can contact support about these records and any applicable rights.</p>
+  </section>
+
+  <section id="children">
+    <div class="section-number">09</div>
+    <h2>Age Eligibility &amp; Children's Privacy</h2>
+    <p>HeyCrew is intended for adults aged 18 and older. People under 18 are not eligible to use the App, including with a parent or guardian's permission.</p>
+    <p>In versions containing our 18+ update, a platform age-range result that clearly identifies someone as under 18 restricts access. Age information is not available on every device or in every situation. If no usable age result is returned, the App may allow access. Access, or the absence of an age prompt, does not confirm someone's age or waive the 18+ requirement. We do not offer a parental-consent route for users under 18.</p>
+    <p>The age check itself does not delete an existing account or notification registration. See Sections 6 and 8 for notifications, support and deletion requests.</p>
+    <p>If you believe someone under 18 has provided personal information through HeyCrew, contact <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a>. We will review the report and take appropriate steps, including handling deletion requests and removing information where required by applicable law. Please do not send a child's identity documents or date of birth unless we explain a necessary and appropriate verification process.</p>
+  </section>
+
+  <section id="your-rights">
+    <div class="section-number">10</div>
+    <h2>Your Rights</h2>
+    <p>Depending on your location, you may have the right to:</p>
+    <ul>
+      <li>Access the data associated with your device identity</li>
+      <li>Request correction of inaccurate data</li>
+      <li>Request deletion of your data (see Sections 7 and 8 for how to do this)</li>
+      <li>Opt out of push notifications through your device settings</li>
+      <li>Contact us about older-version or historical Analytics and requests concerning your information. Collection is disabled in app versions containing the 18+ update; older versions have no dedicated Firebase Analytics opt-out setting. See Section 4.</li>
+      <li>Unsubscribe from product-update emails through the unsubscribe link in any such email</li>
+    </ul>
+    <p>To exercise any of these rights, contact us at <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a>. We respond within the time required by applicable law and explain any necessary verification or permitted extension. We will not discriminate against you for exercising applicable rights.</p>
+  </section>
+
+  <section id="gdpr-ccpa">
+    <div class="section-number">11</div>
+    <h2>GDPR &amp; CCPA</h2>
+    <p>European Economic Area, UK and Switzerland: Where applicable privacy law grants you additional rights, these may include access, correction, deletion, restriction, portability, objection to certain processing, withdrawal of consent where processing relies on consent, and a complaint to a supervisory authority. The applicable legal basis and transfer requirements depend on the processing and the law that applies. Contact <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a> for information about your particular request. This policy does not treat all Analytics as anonymous or assume that publishing this policy supplies consent.</p>
+    <p>California: Where the CCPA/CPRA applies, rights may include knowing about collection and use, access, correction, deletion, opting out of sale or sharing, and non-discrimination for exercising applicable rights. We do not sell personal information or use it for cross-context behavioral advertising. Contact <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a> to make a request.</p>
+  </section>
+
+  <section id="third-parties">
+    <div class="section-number">12</div>
+    <h2>Third-Party Services</h2>
+    <p>The App currently uses the following third-party services, each governed by its own privacy policy:</p>
+    <ul>
+      <li>Supabase - database, authentication, and backend (<a href="https://supabase.com/privacy">supabase.com/privacy</a>)</li>
+      <li>Firebase Analytics - older-version usage analytics and previously collected records; collection is disabled in app versions containing the 18+ update (<a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a>)</li>
+      <li>Firebase Cloud Messaging (FCM) and related installation services - notification delivery and supporting identifiers/configuration (<a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a>)</li>
+      <li>Apple and Google platform age-range services - age-range information for the 18+ access check; separate from optional social sign-in (<a href="https://apple.com/legal/privacy">apple.com/legal/privacy</a> and <a href="https://policies.google.com/privacy">policies.google.com/privacy</a>)</li>
+      <li>RevenueCat - subscription and in-app purchase management (<a href="https://revenuecat.com/privacy">revenuecat.com/privacy</a>)</li>
+      <li>Google Block Store - on Android, optional credential backup and recovery via your Google account (<a href="https://policies.google.com/privacy">policies.google.com/privacy</a>)</li>
+      <li>Sign in with Apple - optional authentication via Apple ID (<a href="https://apple.com/legal/privacy">apple.com/legal/privacy</a>)</li>
+      <li>Sign in with Google - optional authentication via Google account (<a href="https://policies.google.com/privacy">policies.google.com/privacy</a>)</li>
+      <li>Apple App Store / Google Play - app distribution and in-app purchase processing</li>
+      <li>Anthropic - generates the website help assistant's replies; website assistant only, not used by the App (<a href="https://www.anthropic.com/legal/privacy">anthropic.com/legal/privacy</a>)</li>
+      <li>Voyage AI - converts website assistant questions into search data used to find relevant help articles; website assistant only, not used by the App (<a href="https://www.voyageai.com/privacy">voyageai.com/privacy</a>)</li>
+    </ul>
+    <p>Our use of third-party services does not remove our responsibilities under applicable privacy law. We update this list when our service providers change.</p>
+  </section>
+
+  <section id="website-assistant">
+    <div class="section-number">13</div>
+    <h2>Website Help Assistant</h2>
+    <p>heycrewapp.com offers an optional AI chat assistant that answers questions using HeyCrew's published help articles, this Privacy Policy and our Terms of Service. It is provided by Zero1 Ventures, LLC. This section applies only to that assistant.</p>
+
+    <h3>The assistant is separate from the App</h3>
+    <ul>
+      <li>The assistant runs on the website only. It is not part of the HeyCrew App, and you never need it to use the App.</li>
+      <li>It cannot see or change your HeyCrew account, events, Crews, messages, subscription or any other App data, and it cannot take actions for you, such as deleting an account or changing a plan.</li>
+      <li>Conversations with the assistant are not linked to your HeyCrew account. We do not use App data to answer your questions.</li>
+    </ul>
+
+    <h3>What we collect when you use it</h3>
+    <ul>
+      <li><strong>Your messages and the assistant's replies</strong>, with timestamps.</li>
+      <li><strong>A consent record:</strong> the notice shown before the chat starts and the time you accepted it.</li>
+      <li><strong>A one-way identifier derived from your IP address</strong>, used to limit how often messages can be sent and to prevent abuse. We do not store your raw IP address with the conversation.</li>
+      <li><strong>A conversation identifier</strong> kept in your browser's session storage so the chat continues while the tab is open. It is cleared when you close the tab.</li>
+      <li>Like any website feature, our hosting and service providers process technical information, such as your IP address and browser type, to deliver the service.</li>
+    </ul>
+    <p>Please do not enter passwords, sign-in codes, payment details or other sensitive personal information in the chat.</p>
+
+    <h3>How we use it</h3>
+    <ul>
+      <li>To answer your question. Your question is used to find relevant help content, and that content plus your question is sent to our AI provider to write a reply.</li>
+      <li>To review conversations so we can improve the assistant's answers and our help content, and to investigate misuse.</li>
+    </ul>
+    <p>We do not sell assistant conversations or use them for advertising, and we do not use them to train AI models.</p>
+
+    <h3>Providers</h3>
+    <p>The assistant uses Supabase (conversation storage and processing), Voyage AI (turning your question into search data) and Anthropic (writing replies). These providers process conversation data on our behalf and are listed in Section 12.</p>
+
+    <h3>Retention</h3>
+    <p>Assistant conversations and consent records are deleted automatically 30 days after the conversation starts. Rate-limiting records are deleted after 2 days.</p>
+
+    <h3>Accuracy</h3>
+    <p>Replies are generated by AI and can be incomplete or wrong. The App, this Privacy Policy and our Terms of Service govern if a reply conflicts with them. For help with your account, email <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a>.</p>
+
+    <h3>Your choices</h3>
+    <p>Using the assistant is optional; you can always email support instead. Because conversations are not linked to an account, to request access to or deletion of a conversation before it is deleted automatically, email <a href="mailto:support@heycrewapp.com">support@heycrewapp.com</a> with the approximate date and time and what you asked so we can locate it. The assistant is intended for adults, consistent with the App's 18+ rule.</p>
+  </section>
+
+  <section id="changes">
+    <div class="section-number">14</div>
+    <h2>Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we do, we will update the effective date at the top of this page. For material changes, we will provide any required additional notice, such as a notice on heycrewapp.com or within the App, and obtain any separate consent required before the changed processing begins. Continued use alone does not replace consent where consent is required.</p>
+  </section>
+
+  <section id="contact">
+    <div class="contact-card">
+      <div class="section-number" style="color:rgba(10,191,188,0.7)">15</div>
+      <h2>Contact Us</h2>
+      <p>Questions about this Privacy Policy, a data request, or a content concern? Reach Zero1 Ventures, LLC at 4511 W. Dale Ave, Tampa, FL 33609, or by email below.</p>
+      <a href="mailto:support@heycrewapp.com" class="contact-link">support@heycrewapp.com</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 Zero1 Ventures, LLC. All rights reserved. &nbsp;·&nbsp; <a href="./terms.html">Terms of Service</a></p>
+</footer>
+
+</body>
+</html>
