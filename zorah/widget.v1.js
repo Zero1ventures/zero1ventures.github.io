@@ -181,22 +181,64 @@
     busy = true; send.disabled = true;
     if (!retried) add("m u", esc(text));
     var typing = add("typing", "Looking that up…");
-    var body = { question: text };
+    var body = { question: text, stream: true };
     if (conversationId) body.conversation_id = conversationId;
     else { body.consent = true; body.consent_text = CFG.consent; }
+    var bubble = null;
     try {
       var res = await fetch(CFG.endpoint, { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": KEY }, body: JSON.stringify(body) });
-      var data = await res.json().catch(function () { return {}; });
-      typing.remove();
-      if (res.status === 428) { consented = false; store.set("consent", null); showConsent(); return; }
-      if (res.status === 404 && conversationId && !retried) { conversationId = null; store.set("conv", null); return ask(text, true); }
-      if (res.status === 429) { add("m e", "You're sending messages quickly. Please wait a minute and try again." + supportLine(data.support_email)); return; }
-      if (!res.ok) { add("m e", "Sorry, something went wrong." + supportLine(data.support_email)); return; }
-      if (data.conversation_id) { conversationId = data.conversation_id; store.set("conv", conversationId); }
-      add("m b", render(data.answer || "") + sources(data.citations));
+      var streamed = (res.headers.get("content-type") || "").indexOf("text/event-stream") === 0;
+      if (!streamed) {
+        // Errors before the answer starts come back as JSON with a status code.
+        var data = await res.json().catch(function () { return {}; });
+        typing.remove();
+        if (res.status === 428) { consented = false; store.set("consent", null); showConsent(); return; }
+        if (res.status === 404 && conversationId && !retried) { conversationId = null; store.set("conv", null); return ask(text, true); }
+        if (res.status === 429) { add("m e", "You're sending messages quickly. Please wait a minute and try again." + supportLine(data.support_email)); return; }
+        if (!res.ok || typeof data.answer !== "string") { add("m e", "Sorry, something went wrong." + supportLine(data.support_email)); return; }
+        if (data.conversation_id) { conversationId = data.conversation_id; store.set("conv", conversationId); }
+        add("m b", render(data.answer) + sources(data.citations));
+        return;
+      }
+      // Streaming: text appears as it is written; sources are added when it finishes.
+      var reader = res.body.getReader(), dec = new TextDecoder(), buf = "", answer = "", tail = "", finished = false, pending = false;
+      function paint() {
+        pending = false;
+        if (!bubble) { typing.remove(); bubble = add("m b", ""); }
+        var nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+        bubble.innerHTML = render(answer) + tail;
+        if (nearBottom) log.scrollTop = log.scrollHeight;
+      }
+      function handle(event, d) {
+        if (event === "meta" && d.conversation_id) { conversationId = d.conversation_id; store.set("conv", conversationId); }
+        else if (event === "delta") { answer += d.t || ""; if (!pending) { pending = true; requestAnimationFrame(paint); } }
+        else if (event === "done") { finished = true; tail = sources(d.citations); paint(); log.scrollTop = log.scrollHeight; }
+        else if (event === "error") {
+          finished = true; typing.remove();
+          if (bubble && !answer) bubble.remove();
+          add("m e", "Sorry, something went wrong." + supportLine(d.support_email));
+        }
+      }
+      for (;;) {
+        var r = await reader.read();
+        if (r.done) break;
+        buf += dec.decode(r.value, { stream: true });
+        var i;
+        while ((i = buf.indexOf("\n\n")) >= 0) {
+          var chunk = buf.slice(0, i); buf = buf.slice(i + 2);
+          var ev = "message", dl = [];
+          chunk.split("\n").forEach(function (l) { if (l.indexOf("event:") === 0) ev = l.slice(6).trim(); else if (l.indexOf("data:") === 0) dl.push(l.slice(5).trim()); });
+          if (!dl.length) continue;
+          try { handle(ev, JSON.parse(dl.join(""))); } catch (e) {}
+        }
+      }
+      if (!finished) {
+        typing.remove();
+        add("m e", (answer ? "The answer was cut off." : "Sorry, something went wrong.") + supportLine());
+      }
     } catch (err) {
       typing.remove();
-      add("m e", "Couldn't connect. Check your connection and try again." + supportLine());
+      add("m e", (bubble ? "The connection dropped before the answer finished." : "Couldn't connect. Check your connection and try again.") + supportLine());
     } finally {
       busy = false; send.disabled = false; ta.focus();
     }
