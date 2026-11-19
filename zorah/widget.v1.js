@@ -121,7 +121,7 @@
     ".gen{margin-top:6px;padding:6px 8px;background:#f3f4f6;border-radius:6px;font-size:13.5px}",
     ".head .who{display:flex;align-items:center;gap:10px;min-width:0}",
     ".head .av{width:34px;height:34px;border-radius:9px;flex:none;background:#fff;object-fit:cover}",
-    ".badge{display:inline-block;margin-left:8px;padding:2px 6px;border-radius:5px;font:700 10.5px/1.3 " + BODY + ";letter-spacing:.04em;text-transform:uppercase;vertical-align:3px;background:rgba(255,255,255,.18);color:inherit}",
+    ".head .badge{display:inline-block;margin:0 0 0 8px;padding:2px 6px;border-radius:5px;font:700 10.5px/1.3 " + BODY + ";letter-spacing:.04em;text-transform:uppercase;vertical-align:3px;background:rgba(255,255,255,.18);color:inherit}",
     ".acts{display:flex;align-items:center;gap:2px}",
     ".mail{background:transparent;border:0;color:inherit;cursor:pointer;padding:6px;border-radius:6px;display:flex;opacity:.9}",
     ".mail:hover,.x:hover{background:rgba(255,255,255,.14)}",
