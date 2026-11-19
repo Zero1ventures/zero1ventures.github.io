@@ -36,7 +36,7 @@
     position: ds.position === "left" ? "left" : "right",
     supportEmail: ds.supportEmail || "",
     privacyUrl: ds.privacyUrl || "",
-    consent: ds.consent || "This chat is recorded and may be reviewed to improve our answers. Please don't share passwords, codes, payment details or other personal information. Answers come from our help articles and can't see your account."
+    consent: ds.consent || "You're chatting with an AI assistant. It answers from our help articles, can't see or change your account, and can make mistakes. Chats are recorded and may be reviewed to improve answers. Please don't share passwords, codes, payment details or other personal information."
   };
 
   var NS = "zorah_" + KEY.slice(-8);
