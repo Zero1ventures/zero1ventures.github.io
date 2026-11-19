@@ -175,7 +175,8 @@
       var res = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": key },
-        body: JSON.stringify(conversationId ? { question: text, conversation_id: conversationId, channel: "web" } : { question: text, channel: "web" })
+        body: JSON.stringify(conversationId ? { question: text, conversation_id: conversationId, channel: "web" }
+          : { question: text, channel: "web", consent: true, consent_text: "Internal test by Zero1 Ventures. Conversations are logged for review." })
       });
       var data = await res.json().catch(function () { return {}; });
       status.remove();
