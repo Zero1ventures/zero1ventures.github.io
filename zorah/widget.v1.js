@@ -5,7 +5,7 @@
  *   <script src="https://www.zero1co.com/zorah/widget.v1.js" defer
  *           data-key="zpw_..."                      (required, public widget key)
  *           data-title="HeyCrew Help"               (optional)
- *           data-subtitle="Answers from our help articles"
+ *           data-subtitle="Answers from our help articles"   (optional; omit for a title-only header)
  *           data-greeting="Hi! Ask me anything about HeyCrew."
  *           data-color="#16384A"                    (header color)
  *           data-accent="#0ABFBC"                   (visitor messages and buttons; defaults to data-color)
@@ -42,7 +42,7 @@
   var CFG = {
     endpoint: ds.endpoint || "https://qnrhpgxndmktegittmii.supabase.co/functions/v1/ask?forceFunctionRegion=us-west-2",
     title: ds.title || "Help",
-    subtitle: ds.subtitle || "Answers from our help articles",
+    subtitle: ds.subtitle || "",                     // optional second header line
     greeting: ds.greeting || "Hi! How can I help?",
     color: hex(ds.color, "#2563eb"),                 // header
     position: ds.position === "left" ? "left" : "right",
@@ -100,6 +100,7 @@
     "@media (max-width:480px){.panel{inset:0;width:100%;height:100%;max-width:none;max-height:none;border-radius:0;bottom:0}.launch.hide,.teaser.hide{display:none}.launch{bottom:16px;" + side + ":16px}.teaser{bottom:82px;" + side + ":16px}}",
     ".head{background:var(--brand);color:var(--on-brand);padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}",
     ".head b{display:block;font:700 17px/1.2 " + HEAD + "}.head span{display:block;margin-top:2px;font-size:12.5px;opacity:.85}",
+    ".head.solo{align-items:center}",
     ".x{background:transparent;border:0;color:inherit;cursor:pointer;font-size:24px;line-height:1;padding:2px 6px;border-radius:6px}",
     ".log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--canvas)}",
     ".m{max-width:88%;padding:10px 13px;border-radius:12px;word-wrap:break-word}",
@@ -142,7 +143,7 @@
     "<button class='launch" + (CFG.label ? "" : " icon") + "' type='button' aria-label='" + esc(CFG.label || "Open chat") + "' aria-expanded='false'>" + ICON +
       (CFG.label ? "<span>" + esc(CFG.label) + "</span>" : "") + "</button>" +
     "<section class='panel' role='dialog' aria-label='" + esc(CFG.title) + " chat'>" +
-      "<div class='head'><div><b>" + esc(CFG.title) + "</b><span>" + esc(CFG.subtitle) + "</span></div>" +
+      "<div class='head" + (CFG.subtitle ? "" : " solo") + "'><div><b>" + esc(CFG.title) + "</b>" + (CFG.subtitle ? "<span>" + esc(CFG.subtitle) + "</span>" : "") + "</div>" +
         "<button class='x' type='button' aria-label='Close chat'>&times;</button></div>" +
       "<div class='consent'></div>" +
       "<div class='log' aria-live='polite' hidden></div>" +
@@ -154,6 +155,8 @@
   var $ = function (s) { return root.querySelector(s); };
   var launch = $(".launch"), panel = $(".panel"), log = $(".log"), form = $("form"), ta = $("textarea"), send = $(".send"), consentBox = $(".consent");
   var busy = false;
+  var showSources = true;   // the server can turn citations off per client (tenant setting show_sources)
+  var strip = function (t) { return showSources ? t : t.replace(/ ?(\[\d+\])+/g, "").replace(/ ?\[\d*$/, ""); };  // also hides a half-streamed "[1"
   var conversationId = store.get("conv");
   var consented = store.get("consent") === "1";
 
@@ -249,7 +252,8 @@
         if (res.status === 429) { add("m e", "You're sending messages quickly. Please wait a minute and try again." + supportLine(data.support_email)); return; }
         if (!res.ok || typeof data.answer !== "string") { add("m e", "Sorry, something went wrong." + supportLine(data.support_email)); return; }
         if (data.conversation_id) { conversationId = data.conversation_id; store.set("conv", conversationId); }
-        add("m b", render(data.answer) + sources(data.citations));
+        if (data.show_sources === false) showSources = false;
+        add("m b", render(strip(data.answer)) + (showSources ? sources(data.citations) : ""));
         return;
       }
       // Streaming: text appears as it is written; sources are added when it finishes.
@@ -258,13 +262,16 @@
         pending = false;
         if (!bubble) { typing.remove(); bubble = add("m b", ""); }
         var nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
-        bubble.innerHTML = render(answer) + tail;
+        bubble.innerHTML = render(strip(answer)) + tail;
         if (nearBottom) log.scrollTop = log.scrollHeight;
       }
       function handle(event, d) {
-        if (event === "meta" && d.conversation_id) { conversationId = d.conversation_id; store.set("conv", conversationId); }
+        if (event === "meta") {
+          if (d.show_sources === false) showSources = false;
+          if (d.conversation_id) { conversationId = d.conversation_id; store.set("conv", conversationId); }
+        }
         else if (event === "delta") { answer += d.t || ""; if (!pending) { pending = true; setTimeout(paint, 30); } }
-        else if (event === "done") { finished = true; tail = sources(d.citations); paint(); log.scrollTop = log.scrollHeight; }
+        else if (event === "done") { finished = true; tail = showSources ? sources(d.citations) : ""; paint(); log.scrollTop = log.scrollHeight; }
         else if (event === "error") {
           finished = true; typing.remove();
           if (bubble && !answer) bubble.remove();
