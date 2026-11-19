@@ -28,7 +28,7 @@
   if (!KEY) { console.warn("[Zorah] missing data-key"); return; }
 
   var CFG = {
-    endpoint: ds.endpoint || "https://qnrhpgxndmktegittmii.supabase.co/functions/v1/ask",
+    endpoint: ds.endpoint || "https://qnrhpgxndmktegittmii.supabase.co/functions/v1/ask?forceFunctionRegion=us-west-2",
     title: ds.title || "Help",
     subtitle: ds.subtitle || "Answers from our help articles",
     greeting: ds.greeting || "Hi! How can I help?",
