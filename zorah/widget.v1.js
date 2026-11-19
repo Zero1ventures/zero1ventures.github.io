@@ -18,6 +18,9 @@
  *           data-teaser="Questions? I can help."    (one-time prompt above the launcher)
  *           data-teaser-delay="5"                   (seconds)
  *           data-suggestions="Q1|Q2|Q3"             (up to 4 starter questions)
+ *           data-avatar="https://.../icon.png"      (header icon)
+ *           data-badge="AI"                         (small label after the title)
+ *           data-feedback="off"                     (hide thumbs up/down; on by default)
  *           data-position="right"                   (right | left)
  *           data-support-email="support@example.com"
  *           data-consent="Custom consent text"
@@ -54,8 +57,12 @@
     teaserDelay: Math.max(0, Math.min(60, Number(ds.teaserDelay) || 5)) * 1000,
     suggestions: (ds.suggestions || "").split("|").map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 4),
     fontBody: font(ds.font),
-    fontHead: font(ds.headingFont)
+    fontHead: font(ds.headingFont),
+    avatar: /^https:\/\/[^\s"'<>]+$/i.test(ds.avatar || "") ? ds.avatar : "",   // header icon (https URL)
+    badge: (ds.badge || "").slice(0, 20),                                         // small label after the title, e.g. "AI"
+    feedback: ds.feedback !== "off"                                               // thumbs up/down under answers
   };
+  CFG.feedbackEndpoint = ds.feedbackEndpoint || CFG.endpoint.replace(/\/ask(\?|$)/, "/feedback$1");
   CFG.accent = hex(ds.accent, CFG.color);            // visitor messages and buttons
   CFG.launcher = hex(ds.launcherColor, CFG.accent);  // launcher button
   CFG.canvas = hex(ds.canvas, "#f9fafb");            // chat background
@@ -112,6 +119,16 @@
     ".m a{color:inherit}",
     ".cite{font-size:10.5px;vertical-align:super;opacity:.7}",
     ".gen{margin-top:6px;padding:6px 8px;background:#f3f4f6;border-radius:6px;font-size:13.5px}",
+    ".head .who{display:flex;align-items:center;gap:10px;min-width:0}",
+    ".head .av{width:34px;height:34px;border-radius:9px;flex:none;background:#fff;object-fit:cover}",
+    ".badge{display:inline-block;margin-left:8px;padding:2px 6px;border-radius:5px;font:700 10.5px/1.3 " + BODY + ";letter-spacing:.04em;text-transform:uppercase;vertical-align:3px;background:rgba(255,255,255,.18);color:inherit}",
+    ".acts{display:flex;align-items:center;gap:2px}",
+    ".mail{background:transparent;border:0;color:inherit;cursor:pointer;padding:6px;border-radius:6px;display:flex;opacity:.9}",
+    ".mail:hover,.x:hover{background:rgba(255,255,255,.14)}",
+    ".fb{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;color:#6b7280}",
+    ".fb button{background:transparent;border:1px solid #e5e7eb;border-radius:8px;padding:3px 7px;cursor:pointer;color:#6b7280;display:flex;align-items:center}",
+    ".fb button:hover{border-color:var(--accent);color:var(--brand)}",
+    ".fb a{color:var(--brand);font-weight:600}",
     ".src{margin-top:8px;padding-top:6px;border-top:1px solid #f3f4f6;font-size:12px;color:#6b7280}",
     ".typing{align-self:flex-start;color:#6b7280;font-size:13px}",
     ".sugg{display:flex;flex-direction:column;align-items:flex-start;gap:6px}",
@@ -136,6 +153,9 @@
   });
   host.style.setProperty("--canvas", CFG.canvas);
   var root = host.attachShadow({ mode: "open" });
+  var MAIL = "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>";
+  var UP = "<svg width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M7 10v11H4V10zM7 10l4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.1 21H7'/></svg>";
+  var DOWN = "<svg width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M17 14V3h3v11zM17 14l-4 8a3 3 0 0 1-3-3v-4H4.5a2 2 0 0 1-2-2.3l1.4-8A2 2 0 0 1 5.9 3H17'/></svg>";
   var ICON = "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/></svg>";
   root.innerHTML =
     "<style>" + css + "</style>" +
@@ -143,8 +163,12 @@
     "<button class='launch" + (CFG.label ? "" : " icon") + "' type='button' aria-label='" + esc(CFG.label || "Open chat") + "' aria-expanded='false'>" + ICON +
       (CFG.label ? "<span>" + esc(CFG.label) + "</span>" : "") + "</button>" +
     "<section class='panel' role='dialog' aria-label='" + esc(CFG.title) + " chat'>" +
-      "<div class='head" + (CFG.subtitle ? "" : " solo") + "'><div><b>" + esc(CFG.title) + "</b>" + (CFG.subtitle ? "<span>" + esc(CFG.subtitle) + "</span>" : "") + "</div>" +
-        "<button class='x' type='button' aria-label='Close chat'>&times;</button></div>" +
+      "<div class='head" + (CFG.subtitle ? "" : " solo") + "'><div class='who'>" +
+        (CFG.avatar ? "<img class='av' src='" + esc(CFG.avatar) + "' alt=''>" : "") +
+        "<div><b>" + esc(CFG.title) + (CFG.badge ? "<span class='badge'>" + esc(CFG.badge) + "</span>" : "") + "</b>" +
+        (CFG.subtitle ? "<span>" + esc(CFG.subtitle) + "</span>" : "") + "</div></div>" +
+        "<div class='acts'>" + (CFG.supportEmail ? "<button class='mail' type='button' aria-label='Email support' title='Email support'>" + MAIL + "</button>" : "") +
+        "<button class='x' type='button' aria-label='Close chat'>&times;</button></div></div>" +
       "<div class='consent'></div>" +
       "<div class='log' aria-live='polite' hidden></div>" +
       "<form hidden><textarea rows='1' maxlength='1000' placeholder='Ask a question' aria-label='Your question'></textarea>" +
@@ -193,6 +217,39 @@
     cites.forEach(function (c) { var n = c.title || "Help article"; if (!seen[n]) { seen[n] = 1; names.push(esc(n)); } });
     return "<div class='src'>Sources: " + names.join(" · ") + "</div>";
   }
+  // Contact support: records the handoff (for the handoff-rate metric), then opens an email with a chat reference.
+  function post(body) {
+    if (!conversationId) return Promise.resolve();
+    body.conversation_id = conversationId;
+    return fetch(CFG.feedbackEndpoint, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json", "x-api-key": KEY }, body: JSON.stringify(body) }).catch(function () {});
+  }
+  function mailto(email) {
+    var e = email || CFG.supportEmail;
+    var ref = conversationId ? "\n\nChat reference: " + conversationId.slice(0, 8) : "";
+    return "mailto:" + e + "?subject=" + encodeURIComponent(CFG.title + " question") + "&body=" + encodeURIComponent("Hi,\n\n" + ref);
+  }
+  function handoff(email) {
+    post({ type: "handoff" });
+    window.location.href = mailto(email);
+  }
+  function addFeedback(bubble, messageId) {
+    if (!CFG.feedback || !bubble || !messageId) return;
+    var row = document.createElement("div");
+    row.className = "fb";
+    row.innerHTML = "<span>Helpful?</span><button type='button' data-r='up' aria-label='Yes, helpful'>" + UP + "</button><button type='button' data-r='down' aria-label='Not helpful'>" + DOWN + "</button>";
+    row.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var r = b.getAttribute("data-r");
+        post({ type: "rating", message_id: messageId, rating: r });
+        row.innerHTML = r === "up" ? "<span>Thanks for the feedback.</span>"
+          : "<span>Sorry about that." + (CFG.supportEmail ? " <a href='#'>Email support</a>" : "") + "</span>";
+        var a = row.querySelector("a");
+        if (a) a.addEventListener("click", function (e) { e.preventDefault(); handoff(); });
+      });
+    });
+    bubble._fb = row;
+    bubble.appendChild(row);
+  }
   function supportLine(email) {
     var e = email || CFG.supportEmail;
     return e ? " You can also email <a href='mailto:" + esc(e) + "'>" + esc(e) + "</a>." : "";
@@ -230,6 +287,7 @@
   }
   launch.addEventListener("click", function () { panel.classList.contains("open") ? close() : open(); });
   $(".x").addEventListener("click", close);
+  var mailBtn = $(".mail"); if (mailBtn) mailBtn.addEventListener("click", function () { handoff(); });
   root.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
 
   async function ask(text, retried) {
@@ -253,7 +311,7 @@
         if (!res.ok || typeof data.answer !== "string") { add("m e", "Sorry, something went wrong." + supportLine(data.support_email)); return; }
         if (data.conversation_id) { conversationId = data.conversation_id; store.set("conv", conversationId); }
         if (data.show_sources === false) showSources = false;
-        add("m b", render(strip(data.answer)) + (showSources ? sources(data.citations) : ""));
+        addFeedback(add("m b", render(strip(data.answer)) + (showSources ? sources(data.citations) : "")), data.message_id);
         return;
       }
       // Streaming: text appears as it is written; sources are added when it finishes.
@@ -263,6 +321,7 @@
         if (!bubble) { typing.remove(); bubble = add("m b", ""); }
         var nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
         bubble.innerHTML = render(strip(answer)) + tail;
+        if (bubble._fb) bubble.appendChild(bubble._fb);   // keep the feedback row across late repaints
         if (nearBottom) log.scrollTop = log.scrollHeight;
       }
       function handle(event, d) {
@@ -271,7 +330,7 @@
           if (d.conversation_id) { conversationId = d.conversation_id; store.set("conv", conversationId); }
         }
         else if (event === "delta") { answer += d.t || ""; if (!pending) { pending = true; setTimeout(paint, 30); } }
-        else if (event === "done") { finished = true; tail = showSources ? sources(d.citations) : ""; paint(); log.scrollTop = log.scrollHeight; }
+        else if (event === "done") { finished = true; tail = showSources ? sources(d.citations) : ""; paint(); addFeedback(bubble, d.message_id); log.scrollTop = log.scrollHeight; }
         else if (event === "error") {
           finished = true; typing.remove();
           if (bubble && !answer) bubble.remove();
