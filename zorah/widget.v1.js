@@ -63,6 +63,7 @@
     feedback: ds.feedback !== "off"                                               // thumbs up/down under answers
   };
   CFG.feedbackEndpoint = ds.feedbackEndpoint || CFG.endpoint.replace(/\/ask(\?|$)/, "/feedback$1");
+  CFG.confirmEndpoint = ds.confirmEndpoint || CFG.endpoint.replace(/\/ask(\?|$)/, "/confirm$1");
   CFG.accent = hex(ds.accent, CFG.color);            // visitor messages and buttons
   CFG.launcher = hex(ds.launcherColor, CFG.accent);  // launcher button
   CFG.canvas = hex(ds.canvas, "#f9fafb");            // chat background
@@ -131,6 +132,15 @@
     ".fb a{color:var(--brand);font-weight:600}",
     ".src{margin-top:8px;padding-top:6px;border-top:1px solid #f3f4f6;font-size:12px;color:#6b7280}",
     ".typing{align-self:flex-start;color:#6b7280;font-size:13px}",
+    ".sugg.slots{flex-direction:row;flex-wrap:wrap}",
+    ".card{align-self:flex-start;max-width:88%;background:#fff;border:1.5px solid var(--accent);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}",
+    ".card b{font:700 14.5px/1.3 " + HEAD + ";margin-bottom:2px}.card div{font-size:13.5px;color:#374151}",
+    ".card .row{display:flex;gap:8px;margin-top:8px}",
+    ".card button{border-radius:10px;padding:8px 14px;font:700 13.5px/1 " + HEAD + ";cursor:pointer}",
+    ".card .ok{background:var(--accent);color:var(--on-accent);border:0}",
+    ".card .chg{background:#fff;color:var(--brand);border:1.5px solid #d1d5db}",
+    ".card button:disabled{opacity:.5;cursor:default}",
+    ".card .st{margin-top:6px;font-weight:600;color:var(--brand)}",
     ".sugg{display:flex;flex-direction:column;align-items:flex-start;gap:6px}",
     ".sugg button{background:#fff;color:var(--brand);border:1.5px solid var(--accent);border-radius:12px;padding:8px 12px;font-size:13.5px;font-weight:600;cursor:pointer;text-align:left}",
     ".sugg button:hover{background:var(--accent);color:var(--on-accent)}",
@@ -256,6 +266,42 @@
     return e ? " You can also email <a href='mailto:" + esc(e) + "'>" + esc(e) + "</a>." : "";
   }
 
+  // Booking UI: tappable times, and a confirmation card. Only the visitor's Confirm tap books (confirm function).
+  function showSlots(d) {
+    if (!d || !d.slots || !d.slots.length) return;
+    var box = add("sugg slots", d.slots.map(function (x) { return "<button type='button'>" + esc(x.label) + "</button>"; }).join(""));
+    box.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () { if (busy) return; ask(b.textContent); });
+    });
+  }
+  function showCard(d) {
+    if (!d || !d.action_id) return;
+    log.querySelectorAll(".card .row").forEach(function (r) { r.remove(); });   // older proposals can't be confirmed anymore
+    var card = add("card", "<b>" + esc(d.title || "Please confirm") + "</b>" + (d.lines || []).map(function (l) { return "<div>" + esc(l) + "</div>"; }).join("") +
+      "<div class='row'><button class='ok' type='button'>Confirm</button><button class='chg' type='button'>Change</button></div>");
+    var row = card.querySelector(".row");
+    function status(t) { row.remove(); var st = document.createElement("div"); st.className = "st"; st.textContent = t; card.appendChild(st); }
+    card.querySelector(".chg").addEventListener("click", function () { if (busy) return; status("Not booked"); ask("I'd like to change something."); });
+    card.querySelector(".ok").addEventListener("click", async function () {
+      if (busy) return;
+      busy = true; send.disabled = true;
+      row.querySelectorAll("button").forEach(function (b) { b.disabled = true; });
+      var r = {}, okRes = false;
+      try {
+        var res = await fetch(CFG.confirmEndpoint, { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": KEY },
+          body: JSON.stringify({ conversation_id: conversationId, action_id: d.action_id }) });
+        r = await res.json().catch(function () { return {}; });
+        okRes = res.ok && r.ok;
+      } catch (e) {}
+      busy = false; send.disabled = false;
+      if (okRes) { status("Booked" + (r.ref ? " · Ref " + r.ref : "")); if (r.message && !r.repeat) add("m b", render(r.message)); }
+      else if (r.error === "busy") { row.querySelectorAll("button").forEach(function (b) { b.disabled = false; }); }
+      else { status("Not booked"); add("m e", esc(r.message || "Sorry, that didn't go through.") + supportLine()); }
+      log.scrollTop = log.scrollHeight;
+    });
+  }
+  function showUi(ui) { if (ui.confirm) showCard(ui.confirm); else if (ui.slots) showSlots(ui.slots); }   // the card replaces the time buttons
+
   function showConsent() {
     consentBox.hidden = false; log.hidden = true; form.hidden = true;
     consentBox.innerHTML = "<div>" + esc(CFG.consent) + (CFG.privacyUrl ? " <a href='" + esc(CFG.privacyUrl) + "' target='_blank' rel='noopener noreferrer'>Privacy Policy</a>" : "") + "</div>" +
@@ -293,6 +339,7 @@
 
   async function ask(text, retried) {
     busy = true; send.disabled = true;
+    log.querySelectorAll(".slots").forEach(function (b) { b.remove(); });
     if (!retried) add("m u", esc(text));
     var typing = add("typing", "Looking that up…");
     var body = { question: text, stream: true };
@@ -314,12 +361,14 @@
         if (data.show_sources === false) showSources = false;
         if (data.general_label) genLabel = String(data.general_label);
         addFeedback(add("m b", render(strip(data.answer)) + (showSources ? sources(data.citations) : "")), data.message_id);
+        showUi({ slots: data.slots, confirm: data.confirm });
         return;
       }
       // Streaming: text appears as it is written; sources are added when it finishes.
-      var reader = res.body.getReader(), dec = new TextDecoder(), buf = "", answer = "", tail = "", finished = false, pending = false;
+      var reader = res.body.getReader(), dec = new TextDecoder(), buf = "", answer = "", tail = "", finished = false, pending = false, ui = {};
       function paint() {
         pending = false;
+        if (!bubble && !answer && !finished) return;   // nothing to show yet (e.g. right after a reset)
         if (!bubble) { typing.remove(); bubble = add("m b", ""); }
         var nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
         bubble.innerHTML = render(strip(answer)) + tail;
@@ -333,7 +382,10 @@
           if (d.conversation_id) { conversationId = d.conversation_id; store.set("conv", conversationId); }
         }
         else if (event === "delta") { answer += d.t || ""; if (!pending) { pending = true; setTimeout(paint, 30); } }
-        else if (event === "done") { finished = true; tail = showSources ? sources(d.citations) : ""; paint(); addFeedback(bubble, d.message_id); log.scrollTop = log.scrollHeight; }
+        else if (event === "status") { typing.textContent = d.text || "Working on it…"; }
+        else if (event === "reset") { answer = d.text || ""; if (bubble) { if (answer) paint(); else { bubble.remove(); bubble = null; typing = add("typing", typing.textContent); } } }
+        else if (event === "slots" || event === "confirm") { ui[event] = d; }
+        else if (event === "done") { finished = true; tail = showSources ? sources(d.citations) : ""; paint(); addFeedback(bubble, d.message_id); showUi(ui); log.scrollTop = log.scrollHeight; }
         else if (event === "error") {
           finished = true; typing.remove();
           if (bubble && !answer) bubble.remove();
