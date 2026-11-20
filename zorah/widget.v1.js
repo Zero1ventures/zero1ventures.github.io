@@ -179,7 +179,8 @@
   var $ = function (s) { return root.querySelector(s); };
   var launch = $(".launch"), panel = $(".panel"), log = $(".log"), form = $("form"), ta = $("textarea"), send = $(".send"), consentBox = $(".consent");
   var busy = false;
-  var showSources = true;   // the server can turn citations off per client (tenant setting show_sources)
+  var showSources = true;
+  var genLabel = "";        // server can rename the "General information:" marker per client (tenant setting general_label)   // the server can turn citations off per client (tenant setting show_sources)
   var strip = function (t) { return showSources ? t : t.replace(/ ?(\[\d+\])+/g, "").replace(/ ?\[\d*$/, ""); };  // also hides a half-streamed "[1"
   var conversationId = store.get("conv");
   var consented = store.get("consent") === "1";
@@ -194,7 +195,7 @@
   }
   function render(md) {
     var lines = esc(md).split("\n"), out = [], list = null, para = [];
-    function fp() { if (para.length) { var t = para.join("<br>"); out.push(/^General information:/.test(t) ? "<div class='gen'>" + inline(t) + "</div>" : "<p>" + inline(t) + "</p>"); para = []; } }
+    function fp() { if (para.length) { var t = para.join("<br>"); out.push(/^General information:/.test(t) ? "<div class='gen'>" + (genLabel ? inline(t).replace(/^General information:\s*/, "<b>" + esc(genLabel) + "</b><br>") : inline(t)) + "</div>" : "<p>" + inline(t) + "</p>"); para = []; } }
     function fl() { if (list) { out.push("<" + list.t + ">" + list.i.map(function (x) { return "<li>" + inline(x) + "</li>"; }).join("") + "</" + list.t + ">"); list = null; } }
     lines.forEach(function (l) {
       var ul = /^\s*[-*]\s+(.*)$/.exec(l), ol = /^\s*\d+\.\s+(.*)$/.exec(l);
@@ -311,6 +312,7 @@
         if (!res.ok || typeof data.answer !== "string") { add("m e", "Sorry, something went wrong." + supportLine(data.support_email)); return; }
         if (data.conversation_id) { conversationId = data.conversation_id; store.set("conv", conversationId); }
         if (data.show_sources === false) showSources = false;
+        if (data.general_label) genLabel = String(data.general_label);
         addFeedback(add("m b", render(strip(data.answer)) + (showSources ? sources(data.citations) : "")), data.message_id);
         return;
       }
@@ -327,6 +329,7 @@
       function handle(event, d) {
         if (event === "meta") {
           if (d.show_sources === false) showSources = false;
+          if (d.general_label) genLabel = String(d.general_label);
           if (d.conversation_id) { conversationId = d.conversation_id; store.set("conv", conversationId); }
         }
         else if (event === "delta") { answer += d.t || ""; if (!pending) { pending = true; setTimeout(paint, 30); } }
