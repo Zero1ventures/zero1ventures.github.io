@@ -271,7 +271,7 @@
     if (!d || !d.slots || !d.slots.length) return;
     var box = add("sugg slots", d.slots.map(function (x) { return "<button type='button'>" + esc(x.label) + "</button>"; }).join(""));
     box.querySelectorAll("button").forEach(function (b) {
-      b.addEventListener("click", function () { if (busy) return; ask(b.textContent); });
+      b.addEventListener("click", function () { if (busy) return; ask("I'd like " + b.textContent + "."); });   // a full sentence keeps the reply language right
     });
   }
   function showCard(d) {
