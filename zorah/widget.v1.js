@@ -193,6 +193,8 @@
   var genLabel = "";        // server can rename the "General information:" marker per client (tenant setting general_label)   // the server can turn citations off per client (tenant setting show_sources)
   var strip = function (t) { return showSources ? t : t.replace(/ ?(\[\d+\])+/g, "").replace(/ ?\[\d*$/, ""); };  // also hides a half-streamed "[1"
   var conversationId = store.get("conv");
+  var sessionToken = store.get("sess");   // proves this browser owns the conversation (sent with follow-ups and Confirm)
+  function setConv(id, tok) { conversationId = id; store.set("conv", id); if (tok !== undefined) { sessionToken = tok; store.set("sess", tok); } }
   var consented = store.get("consent") === "1";
 
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
@@ -289,7 +291,7 @@
       var r = {}, okRes = false;
       try {
         var res = await fetch(CFG.confirmEndpoint, { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": KEY },
-          body: JSON.stringify({ conversation_id: conversationId, action_id: d.action_id }) });
+          body: JSON.stringify({ conversation_id: conversationId, action_id: d.action_id, session_token: sessionToken }) });
         r = await res.json().catch(function () { return {}; });
         okRes = res.ok && r.ok;
       } catch (e) {}
@@ -343,7 +345,7 @@
     if (!retried) add("m u", esc(text));
     var typing = add("typing", "Looking that up…");
     var body = { question: text, stream: true };
-    if (conversationId) body.conversation_id = conversationId;
+    if (conversationId) { body.conversation_id = conversationId; if (sessionToken) body.session_token = sessionToken; }
     else { body.consent = true; body.consent_text = CFG.consent; }
     var bubble = null;
     try {
@@ -354,10 +356,10 @@
         var data = await res.json().catch(function () { return {}; });
         typing.remove();
         if (res.status === 428) { consented = false; store.set("consent", null); showConsent(); return; }
-        if (res.status === 404 && conversationId && !retried) { conversationId = null; store.set("conv", null); return ask(text, true); }
+        if (res.status === 404 && conversationId && !retried) { setConv(null, null); return ask(text, true); }
         if (res.status === 429) { add("m e", "You're sending messages quickly. Please wait a minute and try again." + supportLine(data.support_email)); return; }
         if (!res.ok || typeof data.answer !== "string") { add("m e", "Sorry, something went wrong." + supportLine(data.support_email)); return; }
-        if (data.conversation_id) { conversationId = data.conversation_id; store.set("conv", conversationId); }
+        if (data.conversation_id) setConv(data.conversation_id, data.session_token);
         if (data.show_sources === false) showSources = false;
         if (data.general_label) genLabel = String(data.general_label);
         addFeedback(add("m b", render(strip(data.answer)) + (showSources ? sources(data.citations) : "")), data.message_id);
@@ -379,7 +381,7 @@
         if (event === "meta") {
           if (d.show_sources === false) showSources = false;
           if (d.general_label) genLabel = String(d.general_label);
-          if (d.conversation_id) { conversationId = d.conversation_id; store.set("conv", conversationId); }
+          if (d.conversation_id) setConv(d.conversation_id, d.session_token);
         }
         else if (event === "delta") { answer += d.t || ""; if (!pending) { pending = true; setTimeout(paint, 30); } }
         else if (event === "status") { typing.textContent = d.text || "Working on it…"; }
